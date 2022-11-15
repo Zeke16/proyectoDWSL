@@ -256,10 +256,10 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                     <label for="fechaInit">Selecciona la fecha de inicio:</label>
                                     <input class="form-control mt-2" hidden type="text" name="id_proyecto" value="<?= $editar ?>">
                                     <?php
-                                    if(isset($_SESSION['administrador'])){
-                                        echo '<input class="form-control mt-2" hidden type="text" name="admin" value="'. $_SESSION['administrador'].'">';
-                                    }else if(isset($_SESSION['empresa'])){
-                                        echo '<input class="form-control mt-2" hidden type="text" name="empresa" value="'. $_SESSION['empresa'].'">';
+                                    if (isset($_SESSION['administrador'])) {
+                                        echo '<input class="form-control mt-2" hidden type="text" name="admin" value="' . $_SESSION['administrador'] . '">';
+                                    } else if (isset($_SESSION['empresa'])) {
+                                        echo '<input class="form-control mt-2" hidden type="text" name="empresa" value="' . $_SESSION['empresa'] . '">';
                                     }
                                     ?>
                                     <input class="form-control mt-2" type="date" value="<?= $proyectos[0]->fecha_inicio ?>" name="fechaInit" id="fechaInit">
@@ -270,7 +270,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                 </div>
                                 <div class="col-md-4 mt-2">
                                     <label for="carrera">Selecciona la empresa para el proyecto:</label><br>
-                                    <select class="form-control mt-2" name="empresa" required id="empresa">
+                                    <select class="form-control mt-2" name="id_empresa" required id="id_empresa">
                                         <option value="0">- Seleccionar empresa-</option>
                                         <?php
                                         $empresa = "Select * from tbl_empresas";
@@ -349,9 +349,9 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
             <?php
             } else if ($nr == 1 && isset($_SESSION['empresa'])) {
             ?>
-            <div class="row mx-2">
+                <div class="row mx-2">
                     <div class="col-md-12">
-                        <form class="p-3 border border-dark  rounded mt-4" action="http://localhost/proyectodwsl/modules/universidad/controllers/UniversidadController.php" method="post">
+                        <form class="p-3 border border-dark  rounded mt-4" action="http://localhost/proyectodwsl/modules/empresas/controllers/EmpresasController.php" method="post">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="modal-header">
@@ -361,19 +361,26 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                 <div class="col-md-12">
                                     <label for="nombreProyecto">Escribe el nombre del proyecto:</label>
                                     <input class="form-control mt-2" hidden type="text" name="action" value="edit">
+                                    <input class="form-control mt-2" hidden type="text" name="id_empresa" value="<?=$id_empresa?>">
+                                    <?php
+                                    if (isset($_SESSION['administrador'])) {
+                                        echo '<input class="form-control mt-2" hidden type="text" name="admin" value="' . $_SESSION['administrador'] . '">';
+                                    } else if (isset($_SESSION['empresa'])) {
+                                        echo '<input class="form-control mt-2" hidden type="text" name="empresa" value="' . $_SESSION['empresa'] . '">';
+                                    }
+                                    ?>
                                     <input class="form-control mt-2" type="text" name="nombreProyecto" value="<?= $proyectos[0]->nombre_proyecto ?>" id="nombreProyecto">
                                 </div>
                                 <div class="col-md-6 mt-2">
                                     <label for="fechaInit">Selecciona la fecha de inicio:</label>
-                                    <input class="form-control mt-2" hidden type="text" name="id" value="<?= $editar ?>">
+                                    <input class="form-control mt-2" hidden type="text" name="id_proyecto" value="<?= $editar ?>">
                                     <input class="form-control mt-2" type="date" value="<?= $proyectos[0]->fecha_inicio ?>" name="fechaInit" id="fechaInit">
                                 </div>
                                 <div class="col-md-6 mt-2">
                                     <label for="fechaEsti">Selecciona la fecha de finalizacion estimada:</label>
-                                    <input class="form-control mt-2" hidden type="number" name="id" id="id" value="<?= $id ?>">
                                     <input class="form-control mt-2" type="date" name="fechaEsti" value="<?= $proyectos[0]->fecha_final_estimada ?>" id="fechaEsti">
                                 </div>
-                                <div class="col-md-4 mt-2">
+                                <div class="col-md-6 mt-2">
                                     <label for="tipoProyecto">Selecciona el tipo de proyecto:</label><br>
                                     <select class="form-control mt-2" name="tipoProyecto" required id="tipoProyecto">
                                         <option value="0">- Seleccionar tipo de proyecto-</option>
@@ -394,7 +401,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                         ?>
                                     </select>
                                 </div>
-                                <div class="col-md-4 mt-2">
+                                <div class="col-md-6 mt-2">
                                     <label for="carrera">Selecciona la carrera para el proyecto:</label><br>
                                     <select class="form-control mt-2" name="carrera" required id="carrera">
                                         <option value="0">- Seleccionar carrera-</option>

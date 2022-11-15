@@ -216,7 +216,6 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 
 		<!-- Content Wrapper. Contains page content -->
 		<div class="content-wrapper" id="main">
-
 			<div id="alert">
 
 			</div>
@@ -582,6 +581,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 	<script src="http://localhost/proyectodwsl/assets/js/alert.js"></script>
 	<script src="http://localhost/proyectodwsl/assets/js/deleteEmpresa.js"></script>
 	<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
+	
 </body>
 <?php
 

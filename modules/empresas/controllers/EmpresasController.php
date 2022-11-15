@@ -24,7 +24,7 @@ $nombre = isset($_POST['nombreProyecto']) ? $_POST['nombreProyecto'] : '';
 $descripcion = isset($_POST['descripcion']) ? $_POST['descripcion'] : '';
 $fechaInicio = isset($_POST['fechaInit']) ? $_POST['fechaInit'] : '';
 $fechaEsti = isset($_POST['fechaEsti']) ? $_POST['fechaEsti'] : '';
-$idEmpresa = isset($_POST['empresa']) ? $_POST['empresa'] : '';
+$idEmpresa = isset($_POST['id_empresa']) ? $_POST['id_empresa'] : '';
 $tipoProyecto = isset($_POST['tipoProyecto']) ? $_POST['tipoProyecto'] : '';
 $carrera = isset($_POST['carrera']) ? $_POST['carrera'] : '';
 $admin = isset($_POST['admin']) ? $_POST['admin'] : '';
@@ -96,8 +96,13 @@ function createProyectEmpresa($array)
     $lastInsertId = $conexion->lastInsertId();
     if ($lastInsertId > 0) {
         session_start();
-        $_SESSION['exito'] = "exito";
-        header('location: http://localhost/proyectodwsl/modules/universidad/views/index.php');
+        if ($array["admin"] != '') {
+            $_SESSION['exito'] = "exito";
+            header('location: http://localhost/proyectodwsl/modules/universidad/views/index.php');
+        } else if ($array["empresa"] != '') {
+            $_SESSION['exito'] = "exito";
+            header('location: http://localhost/proyectodwsl/modules/empresas/views/index.php');
+        }
     } else {
         print_r($sql->errorInfo());
     }
@@ -109,6 +114,9 @@ function updateProyectEmpresa($array, $idupdate)
     $update = "UPDATE tbl_proyecto_empresas set nombre_proyecto = :nombre_proyecto, descripcion = :descripcion, fecha_inicio = :fecha_inicio, 
         fecha_final_estimada = :fecha_final_estimada, fecha_finalizado = :fecha_finalizado, id_empresa = :id_empresa,
         id_tipo_proyecto = :id_tipo_proyecto, id_estado = :id_estado, id_carrera = :id_carrera where id_proyecto_empresa = " . $idupdate;
+
+    print_r($array);
+    echo $idupdate;
     
     $sql = $conexion->prepare($update);
     $sql->bindParam(':nombre_proyecto', $array["nombre"], PDO::PARAM_STR);
@@ -121,6 +129,7 @@ function updateProyectEmpresa($array, $idupdate)
     $sql->bindParam(':id_estado', $array['estado'], PDO::PARAM_INT);
     $sql->bindParam(':id_carrera', $array['carrera'], PDO::PARAM_INT);
     $sql->execute();
+    print_r($sql);
     session_start();
     if ($array["admin"] != '') {
         $_SESSION['editado'] = "editado";
