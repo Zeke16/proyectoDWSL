@@ -1,0 +1,164 @@
+#home-logo {
+  color: gold;
+  transition: color 0.5s;
+}
+
+#home-logo:hover {
+  color: black;
+}
+
+/*CSS para formulario de universidad*/
+#header-logU {
+  background-color: gold;
+  border: solid rgb(0, 13, 68);
+  border-width: 1px 1px 0px 1px;
+}
+
+#body-logU,
+#body-logU > form > input,
+#btnEnviarU {
+  border: 1px solid rgb(0, 13, 68);
+}
+#btnEnviarU {
+  background-color: gold;
+}
+#btnEnviarU:hover {
+  transition: background-color 0.25s, color 0.25s;
+  background-color: rgb(0, 13, 68);
+  color: white;
+  border: 1px solid black;
+}
+
+#body-logU,
+#header-logU,
+#btnEnviarU {
+  color: rgb(0, 13, 68);
+}
+
+#footer-logU{
+  border: solid rgb(0, 13, 68);
+  border-width: 0px 1px 1px 1px;
+}
+
+/*CSS Para formulario de empresas*/
+#header-logEmp {
+  background-color: #6dd47e;
+  border: solid #293250;
+  border-width: 1px 1px 0px 1px;
+}
+
+#body-logEmp,
+#body-logEmp > form > input,
+#btnEnviarEmp {
+  border: 1px solid #293250;
+}
+#btnEnviarEmp {
+  background-color: #6dd47e;
+}
+
+#btnEnviarEmp:hover {
+  transition: background-color 0.25s, color 0.25s;
+  background-color: #13551f;
+  color: white;
+  border: 1px solid #293250;
+}
+
+#body-logEmp,
+#header-logEmp,
+#btnEnviarEmp {
+  color: #293250;
+}
+
+/*CSS Para formulario de estudiantes*/
+#header-logEst {
+  background-color: #e82785;
+  border: solid #293250;
+  border-width: 1px 1px 0px 1px;
+  color: white;
+}
+
+#body-logEst {
+  border: 1px #293250 solid;
+}
+#btnEnviarEst {
+  background-color: #e82785;
+  border: 1px black solid;
+  color: white;
+}
+#btnEnviarEst:hover {
+  transition: background-color 0.25s, color 0.25s;
+  background-color: #090f52;
+  color: white;
+}
+
+#body-logEst {
+  color: #090f52;
+}
+/*Css para el nav*/
+#loginEmpresa,
+#loginUniversidad,
+#loginEstudiante {
+  cursor: pointer;
+}
+
+#telefono {
+  background-image: image("assets/img/logo.png");
+}
+#titulos-card {
+  font-size: 15px;
+}
+
+/*Css para boton regresar*/
+
+#btnRegresar {
+  background-color: red;
+  color: white;
+  border: 1px black solid;
+}
+
+#intro {
+  width: 120rem;
+  color: white;
+  background-color: rgb(0, 13, 68);
+  border: 1px solid black;
+}
+
+#user {
+  background-color: rgb(0, 13, 68);
+  color: white;
+}
+
+#user > img {
+  border: none;
+}
+
+/*CSS para botones de carousel*/
+#previusEmp,
+#nextEmp {
+  color: #13551f;
+  font-size: 50px;
+}
+
+#previusU,
+#nextU {
+  color: rgb(0, 13, 68);
+  font-size: 50px;
+}
+
+#cardP {
+  height: 320px;
+}
+
+#cardP > div.card-header {
+  height: 64px;
+}
+
+#imgP {
+  height: 200px;
+  width: 100%;
+  object-fit: contain;
+}
+
+#btnCard{
+  width: 110px;
+}
