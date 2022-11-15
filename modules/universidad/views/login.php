@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nr = $exec->rowCount();
     if ($nr == 1) {
         $_SESSION['administrador'] = $registro[0]->nombre_usuario;
-        $_SESSION['id'] = $registro[0]->id_usuario;
+        $_SESSION['id_user'] = $registro[0]->id_usuario;
         header("location: index.php");
     }
     if ($nr == 0) {

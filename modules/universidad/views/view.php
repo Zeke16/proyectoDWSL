@@ -1,9 +1,9 @@
 <?php
 //manejo de session existente, en caso de no existir se regresa al login
 session_start();
-if (isset($_SESSION['administrador']) && isset($_SESSION['id_user'])) {
+if (isset($_SESSION['administrador']) && isset($_SESSION['id'])) {
     $usuarioingresado = $_SESSION['administrador'];
-    $id_user = $_SESSION['id_user'];
+    $id = $_SESSION['id'];
 } else {
     header("location: login.php");
 }
@@ -222,93 +222,85 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 
             </div>
             <?php
-            $editar = isset($_POST['editar']) ? $_POST['editar'] : '';
-            $proyectoU = "Select * from tbl_proyecto_universidad where id_proyecto_universidad = " . $editar;
+            $ver = isset($_POST['ver']) ? $_POST['ver'] : '';
+            $proyectoU = "Select p.id_proyecto_universidad, p.nombre_proyecto, p.descripcion, p.fecha_inicio, p.fecha_final_estimada, p.fecha_finalizado, u.nombre_usuario, tp.nombre_tipo_proyecto, c.nombre_carrera, ep.estado
+            from tbl_proyecto_universidad as p 
+            inner join tbl_super_administrador as u on p.id_usuario = u.id_usuario
+            inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
+            inner join tbl_carreras as c on p.id_carrera = c.id_carrera
+            inner join tbl_estado_proyectos as ep on p.id_estado = ep.id_estado
+            where id_proyecto_universidad = " . $ver;
+
             $ejecutable = $conexion->prepare($proyectoU);
             $ejecutable->execute();
             $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+
             $nr = $ejecutable->RowCount();
             if ($nr == 1) {
             ?>
                 <div class="row mx-2">
-                    <div class="col-md-12">
-                        <form class="p-3 border border-dark  rounded mt-4" action="http://localhost/proyectodwsl/modules/universidad/controllers/UniversidadController.php" method="post">
-                            <div class="row">
-                                <div class="col-md-12">
-                                    <div class="modal-header">
-                                        <h5><i class="fas fa-edit"></i> Editando proyecto <i class="fas fa-angle-right"></i> <?=$proyectos[0]->nombre_proyecto?></h5>
-                                    </div>
-                                </div>
-                                <div class="col-md-12">
-                                    <label for="nombreProyecto">Escribe el nombre del proyecto:</label>
-                                    <input class="form-control mt-2" hidden type="text" name="action" value="edit">
-                                    <input class="form-control mt-2" type="text" name="nombreProyecto" value="<?= $proyectos[0]->nombre_proyecto ?>" id="nombreProyecto">
-                                </div>
-                                <div class="col-md-6 mt-2">
-                                    <label for="fechaInit">Selecciona la fecha de inicio:</label>
-                                    <input class="form-control mt-2" hidden type="text" name="id_proyecto" value="<?= $editar ?>">
-                                    <input class="form-control mt-2" type="date" value="<?= $proyectos[0]->fecha_inicio ?>" name="fechaInit" id="fechaInit">
-                                </div>
-                                <div class="col-md-6 mt-2">
-                                    <label for="fechaEsti">Selecciona la fecha de finalizacion estimada:</label>
-                                    <input class="form-control mt-2" hidden type="number" name="id" id="id_user" value="<?= $id_user ?>">
-                                    <input class="form-control mt-2" type="date" name="fechaEsti" value="<?= $proyectos[0]->fecha_final_estimada ?>" id="fechaEsti">
-                                </div>
-                                <div class="col-md-6 mt-2">
-                                    <label for="tipoProyecto">Selecciona el tipo de proyecto:</label><br>
-                                    <select class="form-control mt-2" name="tipoProyecto" required id="tipoProyecto">
-                                        <option value="0">- Seleccionar tipo de proyecto-</option>
+                    <div class="col-md-12 mt-2">
+                        <table class="table table-striped">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th><?= $proyectos[0]->id_proyecto_universidad ?></th>
+                                    <th scope="col" colspan="3">Informacion general sobre el proyecto</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-bordered">
+                                <tr>
+                                    <th width="25%">Nombre del proyecto</th>
+                                    <td width="25%"><?= $proyectos[0]->nombre_proyecto ?></td>
+                                    <th width="25%">Registrado por: </th>
+                                    <td width="25%"><?= $proyectos[0]->nombre_usuario ?></td>
+                                </tr>
+                                <tr>
+                                    <th width="25%">Descripcion</th>
+                                    <td width="25%" colspan="3"><?= $proyectos[0]->descripcion ?></td>
+                                </tr>
+                                <tr>
+                                    <th width="25%">Fecha de inicio:</th>
+                                    <td width="25%"><?= $proyectos[0]->fecha_inicio ?></td>
+                                    <th width="25%">Fecha estimada de finalizacion:</th>
+                                    <td width="25%"><?= $proyectos[0]->fecha_final_estimada ?></td>
+                                </tr>
+                                <tr>
+                                    <th width="25%">Tipo de proyecto:</th>
+                                    <td width="25%"><?= $proyectos[0]->nombre_tipo_proyecto ?></td>
+                                    <th width="25%">Especialidad del proyecto:</th>
+                                    <td width="25%"><?= $proyectos[0]->nombre_carrera ?></td>
+                                </tr>
+                                <tr>
+                                    <th width="25%">Fecha de finalizacion de proyecto:</th>
+                                    <td width="25%"><?= $proyectos[0]->fecha_finalizado ?></td>
+                                    <th width="25%">Estado del proyecto:</th>
+                                    <td width="25%" class="text-center">
                                         <?php
-                                        $tipo = "Select * from tbl_tipo_proyecto";
-                                        $ejecutable = $conexion->prepare($tipo);
-                                        $ejecutable->execute();
-                                        $tiposP = $ejecutable->fetchAll(PDO::FETCH_OBJ);
-                                        foreach ($tiposP as $tipo) {
-                                            if ($tipo->id_tipo_proyecto == $proyectos[0]->id_tipo_proyecto) {
-                                                echo '<option selected value="' . $tipo->id_tipo_proyecto . '">' . $tipo->nombre_tipo_proyecto . '</option>';
-                                            } else {
-                                        ?>
-                                                <option value="<?= $tipo->id_tipo_proyecto ?>"><?= $tipo->nombre_tipo_proyecto ?></option>
-                                        <?php
-                                            }
+                                        if (strtolower($proyectos[0]->estado) == "sin asignar") {
+                                            echo '<div class="container rounded bg-danger" style="width:7rem;">' . $proyectos[0]->estado . '</div>';
+                                        } else if (strtolower($proyectos[0]->estado) == "en proceso") {
+                                            echo '<div class="container rounded bg-info" style="width:7rem;">' . $proyectos[0]->estado . '</div>';
+                                        } else if (strtolower($proyectos[0]->estado) == "asignado") {
+                                            echo '<div class="container rounded bg-success" style="width:7rem;">' . $proyectos[0]->estado . '</div>';
+                                        } else if (strtolower($proyectos[0]->estado) == "en pausa") {
+                                            echo '<div class="container rounded bg-warning" style="width:7rem;">' . $proyectos[0]->estado . '</div>';
+                                        } else if (strtolower($proyectos[0]->estado) == "finalizado") {
+                                            echo '<div class="container rounded bg-primary" style="width:7rem;">' . $proyectos[0]->estado . '</div>';
                                         }
                                         ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-6 mt-2">
-                                    <label for="carrera">Selecciona la carrera para el proyecto:</label><br>
-                                    <select class="form-control mt-2" name="carrera" required id="carrera">
-                                        <option value="0">- Seleccionar carrera-</option>
-                                        <?php
-                                        $carrera = "Select * from tbl_carreras";
-                                        $ejecutable = $conexion->prepare($carrera);
-                                        $ejecutable->execute();
-                                        $carreras = $ejecutable->fetchAll(PDO::FETCH_OBJ);
-                                        foreach ($carreras as $ca) {
-                                            if ($ca->id_carrera == $proyectos[0]->id_carrera) {
-                                                echo '<option selected value="' . $ca->id_carrera . '">' . $ca->nombre_carrera . '</option>';
-                                            } else {
-                                        ?>
-                                                <option value="<?= $ca->id_carrera ?>"><?= $ca->nombre_carrera ?></option>
-                                        <?php
-                                            }
-                                        }
-                                        ?>
-                                    </select>
-                                </div>
-                                <div class="col-md-12 mt-2">
-                                    <label for="descripcion">Escribe la descripcion del proyecto:</label>
-                                    <textarea rows="1" class="form-control mt-2" type="text" name="descripcion" id="descripcion"><?= $proyectos[0]->descripcion ?></textarea>
-                                </div>
-                                <div class="col-md-12">
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-danger" onclick="history.back()">Regresar</button>
-                                        <button type="submit" class="btn btn-warning">Actualizar</button>
-                                    </div>
-                                </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="col-md-12">
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-danger" onclick="history.back()">Regresar</button>
+                                <form class="d-flex justify-content-center" action="http://localhost/proyectodwsl/FPDF/individual.php" target="_blank" method="post">
+                                    <input type="number" hidden name="id_universidad" value="<?= $proyectos[0]->id_proyecto_universidad ?>">
+                                    <input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded">
+                                </form>
                             </div>
-                            
-                        </form>
+                        </div>
                     </div>
                 </div>
             <?php

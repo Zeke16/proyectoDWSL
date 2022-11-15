@@ -1,13 +1,13 @@
 <?php
 session_start();
-if (isset($_SESSION['administrador']) && isset($_SESSION['id'])) {
+if (isset($_SESSION['administrador']) && isset($_SESSION['id_user'])) {
 	$usuarioingresado = $_SESSION['administrador'];
-	$id = $_SESSION['id'];
+	$id_user = $_SESSION['id_user'];
 } else {
 	header("location: login.php");
 }
 
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if ($_SERVER['REQUEST_METHOD'] == "POST" && isset($_POST['cerrar'])) {
 	session_destroy();
 	header("location: login.php");
 }
@@ -22,6 +22,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="http://localhost/proyectodwsl/assets/css/style.css">
+	<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/css/alertify.min.css" />
 	<!--ICONOS-->
 	<link rel="stylesheet" href="http://localhost/proyectodwsl/assets/css/all.min.css">
 	<!--CSS AdminLTE-->
@@ -128,9 +129,9 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 							<form method="POST" action="index.php">
 								<div class="row d-flex justify-content-around">
 									<a id="btnEnviarU" class="col-5 rounded-pill text-center form-control" type="submit"><i class="fas fa-user"></i> Ver perfil</a>
+									<input type="text" hidden name="cerrar" id="" value="cerrar">
 									<button id="btnRegresar" class="col-5 rounded-pill  text-center form-control" type="submit"><i class="fas fa-arrow-circle-right"></i> Salir</button>
 								</div>
-
 							</form>
 						</li>
 					</ul>
@@ -225,8 +226,9 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 				<hr class="my-4">
 				<p>Puedes crear nuevos proyecto desde aqui:</p>
 				<button type="button" class="btn btn-primary btn-md" role="button" data-toggle="modal" data-target="#crearProyectU"><i class="fas fa-plus"></i> Crear nuevo proyecto</button>
+				<button type="button" class="btn btn-success btn-md" role="button" data-toggle="modal" data-target="#crearProyectEmp"><i class="fas fa-plus"></i> Crear nuevo proyecto como empresa</button>
 			</div>
-			<div class="row mx-2 ">
+			<div class="row mx-2">
 				<div class="col-md-6">
 					<div id="carouselProyectU" class="carousel slide rounded mt-2" data-interval="false" data-ride="carousel">
 						<div class="carousel-inner ">
@@ -260,13 +262,13 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 													</form>
 												</div>
 												<div class="col-md-4">
-													<form class="d-flex justify-content-center" action="delete.php" method="post">
+													<form class="d-flex justify-content-center" action="view.php" method="post">
 														<input type="number" hidden name="ver" value="<?= $proyectos[$i]->id_proyecto_universidad ?>">
 														<input type="submit" value="Ver" id="btnCard" class="btn btn-success rounded border border-dark">
 													</form>
 												</div>
 												<div class="col-md-4">
-													<form class="d-flex justify-content-center" action="http://localhost/proyectodwsl/FPDF/individual.php" method="post">
+													<form class="d-flex justify-content-center" action="http://localhost/proyectodwsl/FPDF/individual-universidad.php" target="_blank" method="post">
 														<input type="number" hidden name="id_universidad" value="<?= $proyectos[$i]->id_proyecto_universidad ?>">
 														<input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded border border-dark">
 													</form>
@@ -325,22 +327,35 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 										</div>
 										<div class="card-footer" id="footer-logU">
 											<div class="row">
-												<div class="col-md-4">
-													<form class="d-flex justify-content-center" action="update.php" method="post">
+												<div class="col-md-3">
+													<form class="d-flex justify-content-center" action="../../empresas/views/update.php" method="post">
 														<input type="number" hidden name="editar" value="<?= $proyectos[$i]->id_proyecto_empresa ?>">
 														<input type="submit" value="Editar" id="btnCard" class="btn btn-warning rounded border border-dark">
 													</form>
 												</div>
-												<div class="col-md-4">
-													<form class="d-flex justify-content-center" action="delete.php" method="post">
+												<div class="col-md-3">
+													<form class="d-flex justify-content-center" action="../../empresas/views/view.php" method="post">
 														<input type="number" hidden name="ver" value="<?= $proyectos[$i]->id_proyecto_empresa ?>">
 														<input type="submit" value="Ver" id="btnCard" class="btn btn-success rounded border border-dark">
 													</form>
 												</div>
-												<div class="col-md-4">
-													<form class="d-flex justify-content-center" action="pdf.php" method="post">
+												<div class="col-md-3">
+													<form class="d-flex justify-content-center" target="_blank" action="../../../FPDF/individual-empresa.php" method="post">
 														<input type="number" hidden name="id_empresa" value="<?= $proyectos[$i]->id_proyecto_empresa ?>">
 														<input type="submit" value="Generar pdf" id="btnCard" class="btn btn-secondary rounded border border-dark">
+													</form>
+												</div>
+												<div class="col-md-3">
+													<form class="d-flex justify-content-center" id="form-delete" action="../../empresas/views/delete.php" method="post">
+														<input type="number" hidden name="id_empresa" value="<?= $proyectos[$i]->id_proyecto_empresa ?>">
+														<?php
+														if (isset($_SESSION['administrador'])) {
+															echo '<input class="form-control mt-2" hidden type="text" name="admin" value="' . $_SESSION['administrador'] . '">';
+														} else if (isset($_SESSION['empresa'])) {
+															echo '<input class="form-control mt-2" hidden type="text" name="empresa" value="' . $_SESSION['empresa'] . '">';
+														}
+														?>
+														<input type="submit" value="Eliminar" id="btnCard" data-delete="empresa" class="btn btn-danger rounded border border-dark">
 													</form>
 												</div>
 											</div>
@@ -375,7 +390,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 		</div>
 	</div>
 
-	<!-- Modal -->
+	<!-- Modal ProyectU-->
 	<div class="modal fade" id="crearProyectU" tabindex="-1" role="dialog" aria-labelledby="crearProyectULabel" aria-hidden="true">
 		<div class="modal-dialog modal-xl" role="document">
 			<div class="modal-content ">
@@ -401,8 +416,8 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 									</div>
 									<div class="col-md-6 mt-2">
 										<label for="fechaEsti">Selecciona la fecha de finalizacion estimada:</label>
-										<input class="form-control mt-2" hidden type="number" name="id" id="id" value="<?= $id ?>">
-										<input class="form-control mt-2" type="date" name="fechaEsti" id="fechaEsti">
+										<input class="form-control mt-2" hidden type="number" name="id_user" id="id_user" value="<?= $id_user ?>">
+										<input class="form-control mt-2" type="date" min="2022-10-16" name="fechaEsti" id="fechaEsti">
 									</div>
 									<div class="col-md-6 mt-2">
 										<label for="tipoProyecto">Selecciona el tipo de proyecto:</label><br>
@@ -445,7 +460,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 									<div class="col-md-12">
 										<div class="modal-footer">
 											<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-											<button type="submit" class="btn btn-primary">Save changes</button>
+											<button type="submit" class="btn btn-primary">Guardar</button>
 										</div>
 									</div>
 								</div>
@@ -456,6 +471,103 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 			</div>
 		</div>
 	</div>
+
+	<!-- Modal ProyectEmp-->
+	<div class="modal fade" id="crearProyectEmp" tabindex="-1" role="dialog" aria-labelledby="crearProyectEmpLabel" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content ">
+				<div class="modal-header">
+					<h5 class="modal-title" id="crearProyectEmpLabel"><i class="fas fa-file"></i> Crear nuevo proyecto</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body ">
+					<div class="row">
+						<div class="col-md-12 ">
+							<form action="http://localhost/proyectodwsl/modules/empresas/controllers/EmpresasController.php" method="post">
+								<div class="row">
+									<div class="col-md-12">
+										<label for="nombreProyecto">Escribe el nombre del proyecto:</label>
+										<input class="form-control mt-2" hidden type="text" name="action" value="create">
+										<input class="form-control mt-2" type="text" name="nombreProyecto" id="nombreProyecto">
+									</div>
+									<div class="col-md-6 mt-2">
+										<label for="fechaInit">Selecciona la fecha de inicio:</label>
+										<input class="form-control mt-2" type="date" name="fechaInit" id="fechaInit">
+									</div>
+									<div class="col-md-6 mt-2">
+										<label for="fechaEsti">Selecciona la fecha de finalizacion estimada:</label>
+										<input class="form-control mt-2" type="date" name="fechaEsti" id="fechaEsti">
+									</div>
+									<div class="col-md-4 mt-2">
+										<label for="carrera">Selecciona la empresa para el proyecto:</label><br>
+										<select class="form-control mt-2" name="empresa" required id="empresa">
+											<option value="0">- Seleccionar empresa-</option>
+											<?php
+											$empresa = "Select * from tbl_empresas";
+											$ejecutable = $conexion->prepare($empresa);
+											$ejecutable->execute();
+											$empresas = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+											foreach ($empresas as $emp) {
+											?>
+												<option value="<?= $emp->id_empresa ?>"><?= $emp->nombre_empresa ?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+									<div class="col-md-4 mt-2">
+										<label for="tipoProyecto">Selecciona el tipo de proyecto:</label><br>
+										<select class="form-control mt-2" name="tipoProyecto" required id="tipoProyecto">
+											<option value="0">- Seleccionar tipo de proyecto-</option>
+											<?php
+											$tipo = "Select * from tbl_tipo_proyecto";
+											$ejecutable = $conexion->prepare($tipo);
+											$ejecutable->execute();
+											$tiposP = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+											foreach ($tiposP as $tipo) {
+											?>
+												<option value="<?= $tipo->id_tipo_proyecto ?>"><?= $tipo->nombre_tipo_proyecto ?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+									<div class="col-md-4 mt-2">
+										<label for="carrera">Selecciona la carrera para el proyecto:</label><br>
+										<select class="form-control mt-2" name="carrera" required id="carrera">
+											<option value="0">- Seleccionar carrera-</option>
+											<?php
+											$carrera = "Select * from tbl_carreras";
+											$ejecutable = $conexion->prepare($carrera);
+											$ejecutable->execute();
+											$carreras = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+											foreach ($carreras as $ca) {
+											?>
+												<option value="<?= $ca->id_carrera ?>"><?= $ca->nombre_carrera ?></option>
+											<?php
+											}
+											?>
+										</select>
+									</div>
+									<div class="col-md-12 mt-2">
+										<label for="descripcion">Escribe la descripcion del proyecto:</label>
+										<textarea rows="1" class="form-control mt-2" type="text" name="descripcion" id="descripcion"></textarea>
+									</div>
+									<div class="col-md-12">
+										<div class="modal-footer">
+											<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+											<button type="submit" class="btn btn-primary">Guardar</button>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 	<!--TOGGLE-->
 	<script src="http://localhost/proyectodwsl/assets/js/bootstrap4-toggle.js"></script>
@@ -468,14 +580,30 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 	<script src="http://localhost/proyectodwsl/assets/js/adminlte.min.js.map"></script>
 	<script src="http://localhost/proyectodwsl/assets/js/changeBColor.js"></script>
 	<script src="http://localhost/proyectodwsl/assets/js/alert.js"></script>
+	<script src="http://localhost/proyectodwsl/assets/js/deleteEmpresa.js"></script>
+	<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
 </body>
 <?php
 
 if (isset($_SESSION['exito'])) {
 
-	print("<script>alertRegistro()</script>");
+	print("<script>alertRegistro('crear')</script>");
 
 	unset($_SESSION['exito']);
+}
+
+if (isset($_SESSION['editado'])) {
+
+	print("<script>alertRegistro('editar')</script>");
+
+	unset($_SESSION['editado']);
+}
+
+if (isset($_SESSION['eliminado'])) {
+
+	print("<script>alertRegistro('eliminar')</script>");
+
+	unset($_SESSION['eliminado']);
 }
 ?>
 
