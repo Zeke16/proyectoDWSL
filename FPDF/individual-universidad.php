@@ -14,7 +14,7 @@ class PDF extends FPDF
 {
     public $name;
     
-    public function __construct($orientation='P', $unit='mm', $size='A4', $id, $name)
+    public function __construct($orientation='P', $unit='mm', $size='A4', $name)
     {
         parent::__construct($orientation, $unit, $size);
         $this->name = $name;
@@ -46,7 +46,7 @@ class PDF extends FPDF
         $this->Cell(0, 10, 'Pagina ' . $this->PageNo() . '/{nb}', 0, 0, 'C');
     }
 }
-$pdf = new PDF('p', 'mm', 'A4', $proyectos[0]->id_proyecto_universidad, $proyectos[0]->nombre_proyecto);
+$pdf = new PDF('p', 'mm', 'A4', $proyectos[0]->nombre_proyecto);
 $pdf->SetMargins(17, 10);
 $pdf->AliasNbPages();
 $pdf->AddPage();
