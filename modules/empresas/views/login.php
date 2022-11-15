@@ -2,8 +2,6 @@
 include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
 
 session_start();
-
-
 if (isset($_SESSION['empresa'])) {
     header("location: index.php");
 }
@@ -19,6 +17,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nr = $exec->rowCount();
     if ($nr == 1) {
         $_SESSION['empresa'] = $registro[0]->nombre_empresa;
+        $_SESSION['id_empresa'] = $registro[0]->id_empresa;
         header("location: index.php");
     }
     if ($nr == 0) {
