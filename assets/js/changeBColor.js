@@ -1,6 +1,6 @@
 const content = document.getElementById("main");
 const nav = document.querySelector("nav");
-
+content.style.backgroundColor = "White";
 window.addEventListener("load", () => {
   const input = document.getElementById("a");
 

@@ -1,4 +1,4 @@
-const alertRegistro = () => {
+const alertRegistro = (proceso) => {
     setTimeout(function () {
       $.ajax(
         {
@@ -6,6 +6,7 @@ const alertRegistro = () => {
           type: "POST",
           data: {
             envio: "alertRegistro",
+            proceso: proceso
           },
           success: function (res) {
             $("#alert").html(res);
