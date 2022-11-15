@@ -9,9 +9,8 @@ deleteE.forEach((accion) => {
     })
 })
 
-const fechaInit = document.querySelectorAll('#fechaInit')
-const fechaEsti = document.querySelectorAll('#fechaEsti')
-
+const fechaInit = document.getElementById('fechaInit')
+const fechaEsti = document.getElementById('fechaEsti')
 fechaInit.addEventListener("change", ()=>{
     let date = new Date(fechaInit.value)
     date.setDate(date.getDate() + 2);
