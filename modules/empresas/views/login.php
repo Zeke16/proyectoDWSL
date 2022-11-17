@@ -1,6 +1,6 @@
 <?php
 include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
-
+date_default_timezone_set('America/El_Salvador');
 session_start();
 if (isset($_SESSION['empresa'])) {
     header("location: index.php");
@@ -18,6 +18,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($nr == 1) {
         $_SESSION['empresa'] = $registro[0]->nombre_empresa;
         $_SESSION['id_empresa'] = $registro[0]->id_empresa;
+        //Se calcula cuanto durara la sesion
+        $_SESSION['start'] = time();
+        $_SESSION['end'] = $_SESSION['start'] + (60*60);
         header("location: index.php");
     }
     if ($nr == 0) {

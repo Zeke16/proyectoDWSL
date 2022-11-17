@@ -17,6 +17,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($nr == 1) {
         $_SESSION['administrador'] = $registro[0]->nombre_usuario;
         $_SESSION['id_user'] = $registro[0]->id_usuario;
+        
+        $_SESSION['start'] = time();
+        $_SESSION['end'] = $_SESSION['start'] + (60*60);
+        header("location: index.php");
         header("location: index.php");
     }
     if ($nr == 0) {

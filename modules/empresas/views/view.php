@@ -1,12 +1,18 @@
 <?php
 //manejo de session existente, en caso de no existir se regresa al login
 session_start();
+date_default_timezone_set('America/El_Salvador');
 if ((isset($_SESSION['administrador']) && isset($_SESSION['id_user'])) || (isset($_SESSION['empresa']) && isset($_SESSION['id_empresa']))) {
     $admin = isset($_SESSION['administrador']) ? $_SESSION['administrador'] : '';
-    $id_user = isset($_SESSION['id_user'])?$_SESSION['id_user']:'';
+    $id_user = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : '';
     $empresa = isset($_SESSION['empresa']) ? $_SESSION['empresa'] : '';
     $id_empresa = isset($_SESSION['id_empresa']) ? $_SESSION['id_empresa'] : '';
 
+    $now = time();
+	if ($now > $_SESSION['end']) {
+		session_destroy();
+		header("location: login.php");
+	}
 } else {
     header("location: login.php");
 }

@@ -1,8 +1,15 @@
 <?php
 session_start();
+date_default_timezone_set('America/El_Salvador');
 if (isset($_SESSION['administrador']) && isset($_SESSION['id_user'])) {
 	$usuarioingresado = $_SESSION['administrador'];
 	$id_user = $_SESSION['id_user'];
+
+	$now = time();
+	if ($now > $_SESSION['end']) {
+		session_destroy();
+		header("location: login.php");
+	}
 } else {
 	header("location: login.php");
 }
@@ -254,24 +261,31 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 										</div>
 										<div class="card-footer" id="footer-logU">
 											<div class="row">
-												<div class="col-md-4">
+												<div class="col-md-3">
 													<form class="d-flex justify-content-center" action="update.php" method="post">
 														<input type="number" hidden name="editar" value="<?= $proyectos[$i]->id_proyecto_universidad ?>">
 														<input type="submit" value="Editar" id="btnCard" class="btn btn-warning rounded border border-dark">
 													</form>
 												</div>
-												<div class="col-md-4">
+												<div class="col-md-3">
 													<form class="d-flex justify-content-center" action="view.php" method="post">
 														<input type="number" hidden name="ver" value="<?= $proyectos[$i]->id_proyecto_universidad ?>">
 														<input type="submit" value="Ver" id="btnCard" class="btn btn-success rounded border border-dark">
 													</form>
 												</div>
-												<div class="col-md-4">
-													<form class="d-flex justify-content-center" action="http://localhost/proyectodwsl/FPDF/individual-universidad.php" target="_blank" method="post">
+												<div class="col-md-3">
+													<form class="d-flex justify-content-center" action="../../../FPDF/individual-universidad.php" target="_blank" method="post">
 														<input type="number" hidden name="id_universidad" value="<?= $proyectos[$i]->id_proyecto_universidad ?>">
 														<input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded border border-dark">
 													</form>
 												</div>
+												<div class="col-md-3">
+														<form class="d-flex justify-content-center" id="form-delete" action="delete.php" method="post">
+															<input type="number" hidden name="id_universidad" value="<?= $proyectos[$i]->id_proyecto_universidad ?>">
+															<input class="form-control mt-2" hidden type="text" name="admin" value="<?=$_SESSION['administrador']?>">
+															<input type="submit" value="Eliminar" id="btnCard" data-delete="empresa" class="btn btn-danger rounded border border-dark">
+														</form>
+													</div>
 											</div>
 										</div>
 									</div>
@@ -581,7 +595,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 	<script src="http://localhost/proyectodwsl/assets/js/alert.js"></script>
 	<script src="http://localhost/proyectodwsl/assets/js/deleteEmpresa.js"></script>
 	<script src="//cdn.jsdelivr.net/npm/alertifyjs@1.13.1/build/alertify.min.js"></script>
-	
+
 </body>
 <?php
 

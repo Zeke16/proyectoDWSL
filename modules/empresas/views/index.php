@@ -1,11 +1,19 @@
 <?php
 //manejo de session existente, en caso de no existir se regresa al login
 session_start();
+date_default_timezone_set('America/El_Salvador');
 if ((isset($_SESSION['administrador']) && isset($_SESSION['id_user'])) || (isset($_SESSION['empresa']) && isset($_SESSION['id_empresa']))) {
 	$admin = isset($_SESSION['administrador']) ? $_SESSION['administrador'] : '';
 	$id_user = isset($_SESSION['id_user']) ? $_SESSION['id_user'] : '';
 	$empresa = isset($_SESSION['empresa']) ? $_SESSION['empresa'] : '';
 	$id_empresa = isset($_SESSION['id_empresa']) ? $_SESSION['id_empresa'] : '';
+
+	//control de duracion de sesion
+	$now = time();
+	if ($now > $_SESSION['end']) {
+		session_destroy();
+		header("location: login.php");
+	}
 } else {
 	header("location: login.php");
 }
@@ -23,7 +31,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 
 <head>
 	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta http-equiv="refresh" content="3600">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="http://localhost/proyectodwsl/assets/css/style.css">
 	<!--ICONOS-->
@@ -34,7 +42,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 	<!--Toggle-->
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 	<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.0/css/bootstrap4-toggle.min.css" rel="stylesheet">
-	<title>Document</title>
+	<title><?= date("Y-m-d h:i:s", $_SESSION['end']); ?></title>
 </head>
 
 <body class="sidebar-collapse">
@@ -167,9 +175,9 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 					<div class="info">
 						<a class="d-block">
 							<?php
-							if ($_SESSION['administrador'] != '') {
+							if ($admin != '') {
 								echo $_SESSION['administrador'];
-							} else if ($_SESSION['empresa'] != '') {
+							} else if ($empresa != '') {
 								echo $_SESSION['empresa'];
 							}
 							?></a>
@@ -258,7 +266,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 							<?php
 							$proyectoE;
 
-							if ($_SESSION['administrador'] != '') {
+							if (isset($_SESSION['administrador']) != '') {
 								$proyectoE = "Select * from tbl_proyecto_empresas";
 							} else if ($_SESSION['empresa'] != '') {
 								$proyectoE = "Select * from tbl_proyecto_empresas where id_empresa = " . $id_empresa;

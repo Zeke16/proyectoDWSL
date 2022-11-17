@@ -1,9 +1,16 @@
 <?php
 //manejo de session existente, en caso de no existir se regresa al login
 session_start();
+date_default_timezone_set('America/El_Salvador');
 if (isset($_SESSION['administrador']) && isset($_SESSION['id_user'])) {
     $usuarioingresado = $_SESSION['administrador'];
     $id_user = $_SESSION['id_user'];
+    
+    $now = time();
+	if ($now > $_SESSION['end']) {
+		session_destroy();
+		header("location: login.php");
+	}
 } else {
     header("location: login.php");
 }

@@ -56,6 +56,11 @@ function alert($toDo)
         </button>
     </div>';
     }
+    if($toDo == "aplicar"){
+        echo '
+        <button type="button" class="btn btn-success btn-md" id="apply"><i class="fas fa-check-circle"></i>Hecho</button>
+        ';
+    }
 }
 function createProyect($array)
 {
