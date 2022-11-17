@@ -1,4 +1,6 @@
 <?php
+//informacion para crear una cuenta tipo estudiante
+$action = isset($_POST['action']) ? $_POST['action'] : '';
 $nombre = isset($_POST['nombreEstudiante']) ? $_POST['nombreEstudiante'] : '';
 $edad = isset($_POST['edad']) ? $_POST['edad'] : '';
 $direccion = isset($_POST['direccion']) ? $_POST['direccion'] : '';
@@ -11,7 +13,13 @@ $carrera = isset($_POST['carrera']) ? $_POST['carrera'] : '';
 $correo = isset($_POST['correo']) ? $_POST['correo'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
 
+//info para aplicar o dejar de aplicar en un proyecto
+$proceso = isset($_POST['proceso']) ? $_POST['proceso'] : '';
+$idProyecto =  isset($_POST['idProyecto']) ? $_POST['idProyecto'] : '';
+$idEstudiante = isset($_POST['idEstudiante']) ? $_POST['idEstudiante'] : '';
+$entidad = isset($_POST['entidad']) ? $_POST['entidad'] : '';
 
+//array que contiene todo lo relacionado a la creacion de una cuenta de estudiante
 $info = array(
     "nombre" => $nombre, "edad" => $edad, "direccion" => $direccion,
     "fecha" => $fecha, "telefono" => $telefono, "carnet" => $carnet,
@@ -19,6 +27,7 @@ $info = array(
     "correo" => $correo, "password" => $password, "id_tipo_usuario" => 2
 );
 
+//funcion para crear cuentas tipo estudiantes
 function createEstudiante($array)
 {
     include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
@@ -51,7 +60,80 @@ function createEstudiante($array)
     }
 }
 
-if($_SERVER['REQUEST_METHOD'] == "POST"){
+function aplicarUniversidad($pro, $idP, $idE)
+{
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+
+    if ($pro == "aplicar") {
+        $aplicando = "INSERT INTO tbl_postulante_universidad (id_proyecto_universidad, id_estudiante)
+            VALUES (:id_proyecto_universidad, :id_estudiante)";
+        $sql = $conexion->prepare($aplicando);
+        $sql->bindParam(':id_proyecto_universidad', $idP, PDO::PARAM_INT);
+        $sql->bindParam(':id_estudiante', $idE, PDO::PARAM_INT);
+        $sql->execute();
+
+        $lastInsertId = $conexion->lastInsertId();
+        if ($lastInsertId > 0) {
+            echo
+            '
+            <button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="' . $idP . '" data-id="' . $idE . '" id="noAplicar"><i class="fas fa-reply"></i> Dejar de aplicar</button>
+            ';
+        } else {
+            print_r($sql->errorInfo());
+        }
+    } else if ($pro == "noAplicar") {
+        $retirando = "DELETE FROM tbl_postulante_universidad where id_proyecto_universidad = " . $idP
+            . ' and id_estudiante = ' . $idE;
+        $sql = $conexion->prepare($retirando);
+        $sql->execute();
+        echo
+        '
+            <button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="' . $idP . '" data-id="' . $idE . '" id="aplicar"><i class="fas fa-envelope"></i>  Aplicar</button>
+        ';
+    }
+}
+
+function aplicarEmpresa($pro, $idP, $idE)
+{
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+
+    if ($pro == "aplicar") {
+        $aplicando = "INSERT INTO tbl_postulante_empresas (id_proyecto_empresa, id_estudiante)
+            VALUES (:id_proyecto_empresa, :id_estudiante)";
+        $sql = $conexion->prepare($aplicando);
+        $sql->bindParam(':id_proyecto_empresa', $idP, PDO::PARAM_INT);
+        $sql->bindParam(':id_estudiante', $idE, PDO::PARAM_INT);
+        $sql->execute();
+
+        $lastInsertId = $conexion->lastInsertId();
+        if ($lastInsertId > 0) {
+            echo
+            '
+                <button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="' . $idP . '" data-id="' . $idE . '" id="noAplicar"><i class="fas fa-reply"></i> Dejar de aplicar</button>
+            ';
+        } else {
+            print_r($sql->errorInfo());
+        }
+    } else if ($pro == "noAplicar") {
+        $retirando = "DELETE FROM tbl_postulante_empresas where id_proyecto_empresa = " . $idP
+            . ' and id_estudiante = ' . $idE;
+        $sql = $conexion->prepare($retirando);
+        $sql->execute();
+        echo
+        '
+            <button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="' . $idP . '" data-id="' . $idE . '" id="aplicar"><i class="fas fa-envelope"></i>  Aplicar</button>
+            ';
+    }
+}
+
+//conjunto de if que define que lanzar en caso de realizarse un post
+
+if ($_SERVER['REQUEST_METHOD'] == "POST" && $action == "crear") {
     createEstudiante($info);
 }
-?>
+if (($_POST['proceso'] == "aplicar" || $_POST['proceso'] == "noAplicar") && $_POST['entidad'] == "universidad") {
+    aplicarUniversidad($proceso, $idProyecto, $idEstudiante);
+}
+if (($_POST['proceso'] == "aplicar" || $_POST['proceso'] == "noAplicar") && $_POST['entidad'] == "empresa") {
+    aplicarEmpresa($proceso, $idProyecto, $idEstudiante);
+}

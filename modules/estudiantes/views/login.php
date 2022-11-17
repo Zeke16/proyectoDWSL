@@ -16,6 +16,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $nr = $exec->rowCount();
     if ($nr == 1) {
         $_SESSION['estudiante'] = $registro[0]->nombre_estudiante;
+        $_SESSION['id_estudiante'] = $registro[0]->id_estudiante;
+        $_SESSION['num_materias'] = $registro[0]->materias_cursadas;
+        $_SESSION['carrera'] = $registro[0]->id_carrera;
+        $_SESSION['start'] = time();
+        $_SESSION['end'] = $_SESSION['start'] + (60*60);
         header("location: index.php");
     }
     if ($nr == 0) {

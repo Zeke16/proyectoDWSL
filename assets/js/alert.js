@@ -16,4 +16,4 @@ const alertRegistro = (proceso) => {
       );
     });
   };
-  
+
