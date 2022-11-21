@@ -2,6 +2,11 @@
 //post de ajax
 $envio = isset($_POST['envio']) ? $_POST['envio'] : '';
 $proceso = isset($_POST['proceso']) ? $_POST['proceso'] : '';
+date_default_timezone_set('America/El_Salvador');
+//Aplicacion de postulacion a proyecto de universidad
+$id_estudiante_aplicar = isset($_POST['id_estudiante_aplicar']) ? $_POST['id_estudiante_aplicar'] : '';
+$id_proyecto_aplicar = isset($_POST['id_proyecto_aplicar']) ? $_POST['id_proyecto_aplicar'] : '';
+$id_proyecto_finalizar = isset($_POST['id_proyecto_finalizar']) ? $_POST['id_proyecto_finalizar'] : '';
 
 //post del form para crud
 $action = isset($_POST['action']) ? $_POST['action'] : ''; //input que define que accion crud hacer
@@ -19,7 +24,7 @@ $info = array(
     "descripcion" => $descripcion,
     "fechaInicio" => $fechaInicio,
     "fechaEsti" => $fechaEsti,
-    "fechaFin" => $fechaEsti,
+    "fechaFinal" => $fechaEsti,
     "idUser" => $idUser,
     "tipoProyecto" => $tipoProyecto,
     "estado" => 1,
@@ -69,6 +74,7 @@ function createProyect($array)
         (nombre_proyecto, descripcion, fecha_inicio, fecha_final_estimada, fecha_finalizado, id_usuario, id_tipo_proyecto, id_estado, id_carrera) 
         VALUES (:nombre_proyecto, :descripcion, :fecha_inicio, :fecha_final_estimada, :fecha_finalizado, :id_usuario, :id_tipo_proyecto, :id_estado, :id_carrera)";
 
+print_r($array);
     $sql = $conexion->prepare($insert);
     $sql->bindParam(':nombre_proyecto', $array["nombre"], PDO::PARAM_STR);
     $sql->bindParam(':descripcion', $array["descripcion"], PDO::PARAM_STR);
@@ -111,7 +117,41 @@ function updateProyect($array, $idupdate)
 
     session_start();
     $_SESSION['editado'] = "editado";
-    header('location: http://localhost/proyectodwsl/modules/universidad/views/index.php');
+    header('location: index.php');
+}
+
+function aceptarPostulacion($id_est, $id_proy){
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+    $query = "UPDATE tbl_postulante_universidad 
+    SET id_estado_postulacion = 1 
+    WHERE id_estudiante = " . $id_est . " and id_proyecto_universidad = " . $id_proy; 
+    $sql = $conexion->prepare($query);
+    $sql->execute();
+
+    $query2 = "update tbl_proyecto_universidad set id_estado = 2 where id_proyecto_universidad = " . $id_proy;
+    $sql = $conexion->prepare($query2);
+    $sql->execute(); 
+    echo '<div class="container rounded bg-primary text-center" style="width:7rem;">Aceptado</div>';
+}
+
+function rechazarPostulacion($id_est, $id_proy){
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+    $query = "UPDATE tbl_postulante_universidad 
+    SET id_estado_postulacion = 2 
+    WHERE id_estudiante = " . $id_est . " and id_proyecto_universidad = " . $id_proy; 
+    $sql = $conexion->prepare($query);
+    $sql->execute();
+    echo '<div class="container rounded bg-danger text-center" style="width:7rem;">Rechazado</div>';
+}
+
+function finalizarProyecto($id){
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+    $query = "UPDATE tbl_proyecto_universidad
+    SET id_estado = 3, fecha_finalizado = '" . date('Y-m-d') . "' WHERE id_proyecto_universidad = " . $id;
+    $sql = $conexion->prepare($query);
+    $sql->execute();
+    //echo $query;die;
+    echo '<div class="container rounded bg-primary" style="width:7rem;">Finalizado</div>';
 }
 
 if ($_SERVER['REQUEST_METHOD'] == "POST" && $action == 'create') {
@@ -122,4 +162,13 @@ if ($_SERVER['REQUEST_METHOD'] == "POST" && $action == 'edit') {
 }
 if ($envio == 'alertRegistro') {
     alert($proceso);
+}
+if($envio == 'aceptarPostulante'){
+    aceptarPostulacion($id_estudiante_aplicar, $id_proyecto_aplicar);
+}
+if($envio == 'rechazarPostulante'){
+    rechazarPostulacion($id_estudiante_aplicar, $id_proyecto_aplicar);
+}
+if($envio == 'finalizarProyecto'){
+    finalizarProyecto($id_proyecto_finalizar);
 }

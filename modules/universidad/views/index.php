@@ -503,6 +503,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 									<div class="col-md-12">
 										<label for="nombreProyecto">Escribe el nombre del proyecto:</label>
 										<input class="form-control mt-2" hidden type="text" name="action" value="create">
+										<input class="form-control mt-2" hidden type="text" name="admin" value="<?=$_SESSION['admin']?>">
 										<input class="form-control mt-2" type="text" name="nombreProyecto" id="nombreProyecto">
 									</div>
 									<div class="col-md-6 mt-2">
@@ -515,7 +516,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 									</div>
 									<div class="col-md-4 mt-2">
 										<label for="carrera">Selecciona la empresa para el proyecto:</label><br>
-										<select class="form-control mt-2" name="empresa" required id="empresa">
+										<select class="form-control mt-2" name="id_empresa" required id="id_empresa">
 											<option value="0">- Seleccionar empresa-</option>
 											<?php
 											$empresa = "Select * from tbl_empresas";
