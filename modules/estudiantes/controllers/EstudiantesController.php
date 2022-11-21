@@ -65,8 +65,8 @@ function aplicarUniversidad($pro, $idP, $idE)
     include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
 
     if ($pro == "aplicar") {
-        $aplicando = "INSERT INTO tbl_postulante_universidad (id_proyecto_universidad, id_estudiante)
-            VALUES (:id_proyecto_universidad, :id_estudiante)";
+        $aplicando = "INSERT INTO tbl_postulante_universidad (id_proyecto_universidad, id_estudiante, id_estado_postulacion)
+            VALUES (:id_proyecto_universidad, :id_estudiante, 3)";
         $sql = $conexion->prepare($aplicando);
         $sql->bindParam(':id_proyecto_universidad', $idP, PDO::PARAM_INT);
         $sql->bindParam(':id_estudiante', $idE, PDO::PARAM_INT);
@@ -98,8 +98,8 @@ function aplicarEmpresa($pro, $idP, $idE)
     include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
 
     if ($pro == "aplicar") {
-        $aplicando = "INSERT INTO tbl_postulante_empresas (id_proyecto_empresa, id_estudiante)
-            VALUES (:id_proyecto_empresa, :id_estudiante)";
+        $aplicando = "INSERT INTO tbl_postulante_empresas (id_proyecto_empresa, id_estudiante, id_estado_postulacion)
+            VALUES (:id_proyecto_empresa, :id_estudiante, 3)";
         $sql = $conexion->prepare($aplicando);
         $sql->bindParam(':id_proyecto_empresa', $idP, PDO::PARAM_INT);
         $sql->bindParam(':id_estudiante', $idE, PDO::PARAM_INT);

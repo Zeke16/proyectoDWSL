@@ -49,12 +49,12 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Escribe tu nombre:</label><br>
-                                    <input class="form-control mt-2" type="text" name="action" value="crear" hidden /><br>
+                                    <input class="form-control mt-2" type="text" name="action" value="crear" hidden />
                                     <input class="form-control mt-2" type="text" name="nombreEstudiante" placeholder="Ingresar nombre del estudiante" required /><br>
                                 </div>
                                 <div class="col-md-6">
                                     <label>Escribe tu edad:</label><br>
-                                    <input class="form-control mt-2" type="number" name="edad" placeholder="Ingresar edad" required /><br>
+                                    <input class="form-control mt-2" type="number" min="1" max="50" name="edad" placeholder="Ingresar edad" required /><br>
                                 </div>
                                 <div class="col-md-6">
                                     <label>Escribe tu direccion:</label><br>
@@ -66,7 +66,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <label>Escribe el numero de telefono:</label><br>
-                                    <input class="form-control mt-2" type="number" name="telefono" placeholder="Ingresar telefono" required></input><br>
+                                    <input class="form-control mt-2" type="number"  name="telefono" placeholder="Ingresar telefono" required></input><br>
                                 </div>
                                 <div class="col-md-6">
                                     <label>Escribe tu carnet:</label><br>
