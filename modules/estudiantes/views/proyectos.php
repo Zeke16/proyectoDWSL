@@ -218,19 +218,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                 <li class="nav-item">
                                     <a href="./proyectos.php" class="nav-link active">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v1</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="./index2.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v2</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="./index3.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Dashboard v3</p>
+                                        <p>Mis proyectos</p>
                                     </a>
                                 </li>
                             </ul>
@@ -250,24 +238,24 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                 <div class="col-md-12 mt-2">
                     <h1 class="text-center">Proyectos por parte de la universidad</h1>
                     <?php
-                    $proyectosPostulados = "Select * from tbl_postulante_universidad as pu
+                    $proyectosPostulados = "SELECT * from tbl_postulante_universidad as pu
                     inner join tbl_proyecto_universidad as p on pu.id_proyecto_universidad = p.id_proyecto_universidad
                     inner join tbl_estado_postulaciones as ep on pu.id_estado_postulacion = ep.id_estado_postulacion
                     inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
                     inner join tbl_carreras as c on p.id_carrera = c.id_carrera
-                    where id_estudiante = " . $id_estudiante;
+                    where id_estudiante = " . $id_estudiante . " ORDER BY pu.id_proyecto_universidad";
                     //echo $proyectosPostulados;
                     $ejecutable = $conexion->prepare($proyectosPostulados);
                     $ejecutable->execute();
                     $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
                     $nr1 = $ejecutable->rowCount();
 
-                    $proyectosPostulados2 = "Select * from tbl_postulante_empresas as pe
+                    $proyectosPostulados2 = "SELECT * from tbl_postulante_empresas as pe
                     inner join tbl_proyecto_empresas as p on pe.id_proyecto_empresa = p.id_proyecto_empresa
                     inner join tbl_estado_postulaciones as ep on pe.id_estado_postulacion = ep.id_estado_postulacion
                     inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
                     inner join tbl_carreras as c on p.id_carrera = c.id_carrera
-                    where id_estudiante = " . $id_estudiante;
+                    where id_estudiante = " . $id_estudiante . " ORDER BY pe.id_proyecto_empresa ASC";
                     //echo $proyectosPostulados2;
                     $ejecutable = $conexion->prepare($proyectosPostulados2);
                     $ejecutable->execute();
@@ -322,9 +310,10 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                             <div class="col-md-12">
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" onclick="history.back()">Regresar</button>
-                                    <form class="d-flex justify-content-center" action="../../../FPDF/individual-empresa.php" target="_blank" method="post">
-                                        <input type="number" hidden name="id_empresa" value="<?= $p1->id_proyecto_empresa ?>">
+                                    <form class="d-flex justify-content-center" action="../../../FPDF/individual-universidad.php" target="_blank" method="post">
+                                        <input type="number" hidden name="id_universidad" value="<?= $p1->id_proyecto_universidad ?>">
                                         <input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded">
+                                        <input type="number" hidden name="id_estudiante" value="<?= $id_estudiante?>">
                                     </form>
                                 </div>
                             </div>
@@ -389,7 +378,8 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-danger" onclick="history.back()">Regresar</button>
                                     <form class="d-flex justify-content-center" action="../../../FPDF/individual-empresa.php" target="_blank" method="post">
-                                        <input type="number" hidden name="id_empresa" value="<?= $p2->id_proyecto_empresa ?>">
+                                        <input type="number" hidden name="id_empresa" value="<?= $p2->id_proyecto_empresa?>">
+                                        <input type="number" hidden name="id_estudiante" value="<?= $id_estudiante?>">
                                         <input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded">
                                     </form>
                                 </div>

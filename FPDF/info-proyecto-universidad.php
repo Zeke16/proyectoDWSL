@@ -16,7 +16,6 @@ $ejecutable = $conexion->prepare($proyectoU);
 $ejecutable->execute();
 $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
 $nr = $ejecutable->RowCount();
-
 class PDF extends FPDF
 {
     public $name;
@@ -71,32 +70,32 @@ $pdf->SetTextColor(0, 0, 0);
 foreach ($proyectos as $r) {
     //primer fila
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(40, 10,  utf8_decode('Nombre del proyecto'), 1, 0, 'L', 1);
+    $pdf->Cell(40, 10,  utf8_decode('Nombre del proyect'), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(40, 10,  utf8_decode($r->nombre_proyecto), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(35, 10,  utf8_decode('Tipo de proyecto'), 1, 0, 'L', 1);
+    $pdf->Cell(35, 10,  utf8_decode('Tipo de proyect'), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(60, 10,  utf8_decode($r->nombre_tipo_proyecto), 1, 1, 'C', 1);
 
     //segunda fila
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->SetTextColor(0, 0, 0);
-    $pdf->Cell(40, 10,  utf8_decode('Fecha de inicio'), 1, 0, 'L', 1);
+    $pdf->Cell(40, 10,  utf8_decode('Fecha de inici'), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(40, 10,  utf8_decode($r->fecha_inicio), 1, 0, 'C', 1);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(60, 10,  utf8_decode('Fecha estimada de finalizacion'), 1, 0, 'L', 1);
+    $pdf->Cell(60, 10,  utf8_decode('Fecha estimada de finalizacio'), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(35, 10,  utf8_decode($r->fecha_final_estimada), 1, 1, 'C', 1);
 
     //tercer fila
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(40, 10,  utf8_decode('Fecha de finalizacion'), 1, 0, 'L', 1);
+    $pdf->Cell(40, 10,  utf8_decode('Fecha de finalizacio'), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(40, 10,  utf8_decode($r->fecha_finalizado), 1, 0, 'C', 1);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(60, 10,  utf8_decode('Estado del proyecto'), 1, 0, 'L', 1);
+    $pdf->Cell(60, 10,  utf8_decode('Estado del proyect'), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', 'B', 10);
     if (strtolower($r->estado) == "finalizado") {
         $pdf->SetTextColor(0, 80, 180);
@@ -113,7 +112,7 @@ foreach ($proyectos as $r) {
     //Cuarta fila
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(50, 10,  utf8_decode('Especialidad del proyecto'), 1, 0, 'L', 1);
+    $pdf->Cell(50, 10,  utf8_decode('Especialidad del proyect'), 1, 0, 'L', 1);
     $pdf->SetTextColor(253, 1, 38);
     $pdf->SetFont('Arial', 'B', 10);
     $pdf->Cell(125, 10,  utf8_decode($r->nombre_carrera), 1, 1, 'C', 1);
@@ -121,7 +120,7 @@ foreach ($proyectos as $r) {
     //Quinta fila
     $pdf->SetTextColor(0, 0, 0);
     $pdf->SetFont('Arial', 'B', 10);
-    $pdf->Cell(50, 15,  utf8_decode('Descripcion del proyecto'), 1, 0, 'L', 1);
+    $pdf->Cell(50, 15,  utf8_decode('Descripcion del proyect'), 1, 0, 'L', 1);
     $pdf->SetFont('Arial', '', 10);
     $pdf->Cell(125, 15,  utf8_decode($r->descripcion), 1, 1, 'L', 1);
 }
