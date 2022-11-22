@@ -247,37 +247,36 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
         <div class="content-wrapper" id="main">
 
             <div class="row mx-2">
+                <div class="col-md-12 mt-2">
+                    <h1 class="text-center">Proyectos por parte de la universidad</h1>
+                    <?php
+                    $proyectosPostulados = "Select * from tbl_postulante_universidad as pu
+                    inner join tbl_proyecto_universidad as p on pu.id_proyecto_universidad = p.id_proyecto_universidad
+                    inner join tbl_estado_postulaciones as ep on pu.id_estado_postulacion = ep.id_estado_postulacion
+                    inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
+                    inner join tbl_carreras as c on p.id_carrera = c.id_carrera
+                    where id_estudiante = " . $id_estudiante;
+                    //echo $proyectosPostulados;
+                    $ejecutable = $conexion->prepare($proyectosPostulados);
+                    $ejecutable->execute();
+                    $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+                    $nr1 = $ejecutable->rowCount();
 
-                <?php
-                $proyectosPostulados = "Select * from tbl_postulante_universidad as pu
-                inner join tbl_proyecto_universidad as p on pu.id_proyecto_universidad = p.id_proyecto_universidad
-                inner join tbl_estado_postulaciones as ep on pu.id_estado_postulacion = ep.id_estado_postulacion
-                inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
-                inner join tbl_carreras as c on p.id_carrera = c.id_carrera
-                where id_estudiante = " . $id_estudiante;
-                //echo $proyectosPostulados;
-                $ejecutable = $conexion->prepare($proyectosPostulados);
-                $ejecutable->execute();
-                $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
-                $nr1 = $ejecutable->rowCount();
-
-                $proyectosPostulados2 = "Select * from tbl_postulante_empresas as pe
-                inner join tbl_proyecto_empresas as p on pe.id_proyecto_empresa = p.id_proyecto_empresa
-                inner join tbl_estado_postulaciones as ep on pe.id_estado_postulacion = ep.id_estado_postulacion
-                inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
-                inner join tbl_carreras as c on p.id_carrera = c.id_carrera
-                where id_estudiante = " . $id_estudiante;
-                //echo $proyectosPostulados2;
-                $ejecutable = $conexion->prepare($proyectosPostulados2);
-                $ejecutable->execute();
-                $proyectos2 = $ejecutable->fetchAll(PDO::FETCH_OBJ);
-                $nr2 = $ejecutable->rowCount();
-                //var_dump($proyectos2);
-                if ($nr1 > 0) {
-                    foreach ($proyectos as $p1) {
-                ?>
-                        <div class="col-md-6 mt-2">
-                            <h1 class="text-center">Proyectos por parte de la universidad</h1>
+                    $proyectosPostulados2 = "Select * from tbl_postulante_empresas as pe
+                    inner join tbl_proyecto_empresas as p on pe.id_proyecto_empresa = p.id_proyecto_empresa
+                    inner join tbl_estado_postulaciones as ep on pe.id_estado_postulacion = ep.id_estado_postulacion
+                    inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
+                    inner join tbl_carreras as c on p.id_carrera = c.id_carrera
+                    where id_estudiante = " . $id_estudiante;
+                    //echo $proyectosPostulados2;
+                    $ejecutable = $conexion->prepare($proyectosPostulados2);
+                    $ejecutable->execute();
+                    $proyectos2 = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+                    $nr2 = $ejecutable->rowCount();
+                    //var_dump($proyectos2);
+                    if ($nr1 > 0) {
+                        foreach ($proyectos as $p1) {
+                    ?>
                             <table class="table table-striped">
                                 <thead class="thead-dark">
                                     <tr>
@@ -329,27 +328,25 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                     </form>
                                 </div>
                             </div>
-                        </div>
+                        <?php
+                        }
+                    } else {
+                        ?>
+                        <h1 class="text-center">No existen registros para mostrar...</h1>
                     <?php
                     }
-                } else {
                     ?>
-                    <div class="col-md-12 d-flex justify-content-center mt-4">
-                        <h1>No existen registros para mostrar...</h1>
-                    </div>
-
+                </div>
+                <div class="col-md-12 mt-2">
+                    <h1 class="text-center">Proyectos de empresas</h1>
                     <?php
-
-                }
-                if ($nr2 > 0) {
-                    foreach ($proyectos2 as $p2) {
+                    if ($nr2 > 0) {
+                        foreach ($proyectos2 as $p2) {
                     ?>
-                        <div class="col-md-6 mt-2">
-                            <h1 class="text-center">Proyectos de empresas</h1>
                             <table class="table table-striped">
                                 <thead class="thead-dark">
                                     <tr>
-                                        <th><?= $p2->id_proyecto_empresa?></th>
+                                        <th><?= $p2->id_proyecto_empresa ?></th>
                                         <th scope="col" colspan="3">Informacion general sobre el proyecto</th>
                                     </tr>
                                 </thead>
@@ -397,16 +394,15 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                     </form>
                                 </div>
                             </div>
-                        </div>
-                    <?php
-                    }
-                } else {
-                    ?>
-                    <div class="col-md-12 d-flex justify-content-center mt-4">
+                        <?php
+                        }
+                    } else {
+                        ?>
                         <h1>No existen registros para mostrar...</h1>
-                    </div>
-                <?php
-                } ?>
+                    <?php
+                    } ?>
+
+                </div>
             </div>
         </div>
 

@@ -100,29 +100,120 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 
 				<!-- Notifications Dropdown Menu -->
 				<li class="nav-item dropdown">
+					<?php
+					$count = 0;
+					//seleccionar los proyectos rechazados de empresas
+					$query = "SELECT 
+						p.id_postulacion_empresa, p.id_proyecto_empresa, p.id_estado_postulacion,
+						pe.nombre_proyecto
+						from tbl_postulante_empresas as p 
+						inner join tbl_proyecto_empresas as pe on pe.id_proyecto_empresa = p.id_proyecto_empresa
+						WHERE id_estudiante = " . $id_estudiante .
+						" AND id_estado_postulacion = 2";
+					$ejecutable = $conexion->prepare($query);
+					$ejecutable->execute();
+					//echo $query;
+					$count += $ejecutable->rowCount();
+					$rechazosEmp = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+
+					//seleccionar los proyectos rechazados de u
+					$query = "SELECT 
+						p.id_postulacion_universidad, p.id_proyecto_universidad, p.id_estado_postulacion,
+						pe.nombre_proyecto
+						from tbl_postulante_universidad as p 
+						inner join tbl_proyecto_universidad as pe on pe.id_proyecto_universidad = p.id_proyecto_universidad
+						WHERE id_estudiante = " . $id_estudiante .
+						" AND id_estado_postulacion = 2";
+					//echo $query;
+					$ejecutable = $conexion->prepare($query);
+					$ejecutable->execute();
+					$count += $ejecutable->rowCount();
+					$rechazosU = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+
+					//seleccionar los proyectos aceptados de empresas
+					$query = "SELECT 
+						p.id_postulacion_empresa, p.id_proyecto_empresa, p.id_estado_postulacion,
+						pe.nombre_proyecto
+						from tbl_postulante_empresas as p 
+						inner join tbl_proyecto_empresas as pe on pe.id_proyecto_empresa = p.id_proyecto_empresa
+						WHERE id_estudiante = " . $id_estudiante .
+						" AND id_estado_postulacion = 1";
+					$ejecutable = $conexion->prepare($query);
+					$ejecutable->execute();
+					//echo $query;
+					$count += $ejecutable->rowCount();
+					$aceptadoEmp = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+
+					//seleccionar los proyectos rechazados de u
+					$query = "SELECT 
+						p.id_postulacion_universidad, p.id_proyecto_universidad, p.id_estado_postulacion,
+						pe.nombre_proyecto
+						from tbl_postulante_universidad as p 
+						inner join tbl_proyecto_universidad as pe on pe.id_proyecto_universidad = p.id_proyecto_universidad
+						WHERE id_estudiante = " . $id_estudiante .
+						" AND id_estado_postulacion = 1";
+					//echo $query;
+					$ejecutable = $conexion->prepare($query);
+					$ejecutable->execute();
+					$count += $ejecutable->rowCount();
+					$aceptadoU = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+
+
+					?>
 					<a class="nav-link" data-toggle="dropdown" href="#">
 						<i class="far fa-bell"></i>
-						<span class="badge badge-warning navbar-badge">15</span>
+						<span class="badge badge-warning navbar-badge"><?= ($count) ? $count : '' ?></span>
 					</a>
 					<div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-						<span class="dropdown-item dropdown-header">15 Notifications</span>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-envelope mr-2"></i> 4 new messages
-							<span class="float-right text-muted text-sm">3 mins</span>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-users mr-2"></i> 8 friend requests
-							<span class="float-right text-muted text-sm">12 hours</span>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item">
-							<i class="fas fa-file mr-2"></i> 3 new reports
-							<span class="float-right text-muted text-sm">2 days</span>
-						</a>
-						<div class="dropdown-divider"></div>
-						<a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+						<span class="dropdown-item dropdown-header"> Notificationes</span>
+
+						<?php
+						foreach ($rechazosEmp as $reject) {
+						?>
+							<div class="dropdown-divider"></div>
+							<a href="#" class="dropdown-item">
+								<i class="fas fa-times mr-2 text-danger"></i>
+								Has sido rechazado del proyecto<br>
+								<b><u><?= $reject->nombre_proyecto ?></u></b>
+							</a>
+						<?php
+						} ?>
+
+						<?php
+						foreach ($rechazosU as $reject) {
+						?>
+							<div class="dropdown-divider"></div>
+							<a href="#" class="dropdown-item">
+								<i class="fas fa-times mr-2 text-danger"></i>
+								Has sido rechazado del proyecto<br>
+								<b><u><?= $reject->nombre_proyecto ?></u></b>
+							</a>
+						<?php
+						} ?>
+
+						<?php
+						foreach ($aceptadoEmp as $reject) {
+						?>
+							<div class="dropdown-divider"></div>
+							<a href="#" class="dropdown-item">
+								<i class="fas fa-check mr-2 text-primary"></i>
+								Has sido aceptado en el proyecto<br>
+								<b><u><?= $reject->nombre_proyecto ?></u></b>
+							</a>
+						<?php
+						} ?>
+
+						<?php
+						foreach ($aceptadoU as $reject) {
+						?>
+							<div class="dropdown-divider"></div>
+							<a href="#" class="dropdown-item">
+								<i class="fas fa-check mr-2 text-primary"></i>
+								Has sido aceptado en el proyecto<br>
+								<b><u><?= $reject->nombre_proyecto ?></u></b>
+							</a>
+						<?php
+						} ?>
 					</div>
 				</li>
 				<li class="nav-item">
@@ -276,7 +367,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 							$postulados = array();
 
 							//Guardamos todos los id de cada proyecto en el que el estudiante esta postulado
-							foreach($existente as $ex){
+							foreach ($existente as $ex) {
 								$postulados[] = $ex->id_proyecto_universidad;
 							}
 
@@ -308,24 +399,23 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 												/**Si la cantidad de materias cursadas por el usuario son igual o mayor
 												 * a la cantidad minima requerida de materias para aplicar a los proyectos
 												 * es cierto, mostrara el siguiente contenido
-												 * */ 
+												 * */
 												if ($num_materias >= $materiasMinimas) {
 													/**Se revisa si el estudiante esta postulado en los proyectos,
 													 * Si esta postulado mostramos un boton para dejar de postularnos
 													 * En caso contrario nos permite aplicar al proyecto
 													 */
-													if(in_array($proyectos[$i]->id_proyecto_universidad,$postulados)){
+													if (in_array($proyectos[$i]->id_proyecto_universidad, $postulados)) {
 														echo '
-														<div class="col-md-12 d-flex justify-content-center" id="apply-'.$proyectos[$i]->id_proyecto_universidad.'">
-															<button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="'.$proyectos[$i]->id_proyecto_universidad.'" data-id="'.$id_estudiante.'" id="noAplicar"><i class="fas fa-reply"></i> Dejar de aplicar</button>
+														<div class="col-md-12 d-flex justify-content-center" id="apply-' . $proyectos[$i]->id_proyecto_universidad . '">
+															<button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_universidad . '" data-id="' . $id_estudiante . '" id="noAplicar"><i class="fas fa-reply"></i> Dejar de aplicar</button>
 														</div>';
-													}else{
+													} else {
 														echo '
-														<div class="col-md-12 d-flex justify-content-center" id="apply-'.$proyectos[$i]->id_proyecto_universidad.'">
-															<button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="'.$proyectos[$i]->id_proyecto_universidad.'" data-id="'.$id_estudiante.'" id="aplicar"><i class="fas fa-envelope"></i>  Aplicar</button>
+														<div class="col-md-12 d-flex justify-content-center" id="apply-' . $proyectos[$i]->id_proyecto_universidad . '">
+															<button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_universidad . '" data-id="' . $id_estudiante . '" id="aplicar"><i class="fas fa-envelope"></i>  Aplicar</button>
 														</div>';
 													}
-													
 												} else {
 													/**Si no se cumple la cantidad minima de materias no se podra
 													 * postular al proyecto
@@ -352,7 +442,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 							$postuladosEmpresa = array();
 
 							//Guardamos todos los id de cada proyecto en el que el estudiante esta postulado
-							foreach($existenteEmpresa as $exEmpresa){
+							foreach ($existenteEmpresa as $exEmpresa) {
 								$postuladosEmpresa[] = $exEmpresa->id_proyecto_empresa;
 							}
 							$proyectoE = "Select * from tbl_proyecto_empresas where id_carrera = " . $carrera . " and id_estado = 1";
@@ -376,29 +466,28 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 											</div>
 										</div>
 										<div class="card-footer" id="footer-logU">
-										<div class="row">
+											<div class="row">
 												<?php
 												/**Si la cantidad de materias cursadas por el usuario son igual o mayor
 												 * a la cantidad minima requerida de materias para aplicar a los proyectos
 												 * es cierto, mostrara el siguiente contenido
-												 * */ 
+												 * */
 												if ($num_materias >= $materiasMinimas) {
 													/**Se revisa si el estudiante esta postulado en los proyectos,
 													 * Si esta postulado mostramos un boton para dejar de postularnos
 													 * En caso contrario nos permite aplicar al proyecto
 													 */
-													if(in_array($proyectos[$i]->id_proyecto_empresa,$postuladosEmpresa)){
+													if (in_array($proyectos[$i]->id_proyecto_empresa, $postuladosEmpresa)) {
 														echo '
-														<div class="col-md-12 d-flex justify-content-center" id="apply-empresa-'.$proyectos[$i]->id_proyecto_empresa.'">
-															<button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="'.$proyectos[$i]->id_proyecto_empresa.'" data-id="'.$id_estudiante.'" id="noAplicarEmpresa"><i class="fas fa-reply"></i> Dejar de aplicar</button>
+														<div class="col-md-12 d-flex justify-content-center" id="apply-empresa-' . $proyectos[$i]->id_proyecto_empresa . '">
+															<button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_empresa . '" data-id="' . $id_estudiante . '" id="noAplicarEmpresa"><i class="fas fa-reply"></i> Dejar de aplicar</button>
 														</div>';
-													}else{
+													} else {
 														echo '
-														<div class="col-md-12 d-flex justify-content-center" id="apply-empresa-'.$proyectos[$i]->id_proyecto_empresa.'">
-															<button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="'.$proyectos[$i]->id_proyecto_empresa.'" data-id="'.$id_estudiante.'" id="aplicarEmpresa"><i class="fas fa-envelope"></i>  Aplicar</button>
+														<div class="col-md-12 d-flex justify-content-center" id="apply-empresa-' . $proyectos[$i]->id_proyecto_empresa . '">
+															<button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_empresa . '" data-id="' . $id_estudiante . '" id="aplicarEmpresa"><i class="fas fa-envelope"></i>  Aplicar</button>
 														</div>';
 													}
-													
 												} else {
 													/**Si no se cumple la cantidad minima de materias no se podra
 													 * postular al proyecto
