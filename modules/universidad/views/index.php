@@ -274,7 +274,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 													</form>
 												</div>
 												<div class="col-md-3">
-													<form class="d-flex justify-content-center" action="../../../FPDF/individual-universidad.php" target="_blank" method="post">
+													<form class="d-flex justify-content-center" action="../../../FPDF/info-proyecto-universidad.php" target="_blank" method="post">
 														<input type="number" hidden name="id_universidad" value="<?= $proyectos[$i]->id_proyecto_universidad ?>">
 														<input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded border border-dark">
 													</form>
@@ -353,7 +353,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 													</form>
 												</div>
 												<div class="col-md-3">
-													<form class="d-flex justify-content-center" target="_blank" action="../../../FPDF/individual-empresa.php" method="post">
+													<form class="d-flex justify-content-center" target="_blank" action="../../../FPDF/info-proyecto-empresa.php" method="post">
 														<input type="number" hidden name="id_empresa" value="<?= $proyectos[$i]->id_proyecto_empresa ?>">
 														<input type="submit" value="Generar pdf" id="btnCard" class="btn btn-secondary rounded border border-dark">
 													</form>

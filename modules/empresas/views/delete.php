@@ -1,4 +1,5 @@
 <?php
+$host  = $_SERVER['HTTP_HOST'];
 include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
 $id_empresa = isset($_POST['id_empresa']) ? $_POST['id_empresa'] : '';
 
@@ -9,9 +10,9 @@ $sql->execute();
 session_start();
     if (isset($_POST['admin'])) {
         $_SESSION['eliminado'] = "eliminado";
-        header('location: http://localhost/proyectodwsl/modules/universidad/views/index.php');
+        header('location: http://' . $host .'/proyectodwsl/modules/universidad/views/index.php');
     } else if (isset($_POST['empresa'])) {
         $_SESSION['eliminado'] = "eliminado";
-        header('location: http://localhost/proyectodwsl/modules/empresas/views/index.php');
+        header('location: index.php');
     }
 ?>

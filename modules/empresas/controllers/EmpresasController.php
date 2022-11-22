@@ -75,7 +75,7 @@ function createEmpresa($array)
     if ($lastInsertId > 0) {
         session_start();
         $_SESSION['exito'] = "exito";
-        header('location: http://localhost/proyectodwsl/modules/empresas/views/login.php');
+        header('location: ..views/login.php');
     } else {
         print_r($sql->errorInfo());
     }
@@ -155,8 +155,17 @@ function aceptarPostulacion($id_est, $id_proy){
     $sql = $conexion->prepare($query);
     $sql->execute();
     //echo $query;die;
-    $query2 = "update tbl_proyecto_empresas set id_estado = 2 where id_proyecto_empresa = " . $id_proy;
+
+    $query2 = "DELETE FROM tbl_postulante_universidad WHERE id_estudiante =" . $id_est ." AND id_estado_postulacion != 1";
     $sql = $conexion->prepare($query2);
+    $sql->execute(); 
+
+    $query3 = "DELETE FROM tbl_postulante_empresa WHERE id_estudiante =" . $id_est ." AND id_estado_postulacion != 1";
+    $sql = $conexion->prepare($query3);
+    $sql->execute();
+
+    $query4 = "update tbl_proyecto_empresas set id_estado = 2 where id_proyecto_empresa = " . $id_proy;
+    $sql = $conexion->prepare($query4);
     $sql->execute(); 
     echo '<div class="container rounded bg-primary text-center" style="width:7rem;">Aceptado</div>';
 }

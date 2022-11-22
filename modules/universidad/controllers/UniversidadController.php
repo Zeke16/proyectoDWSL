@@ -75,7 +75,7 @@ function createProyect($array)
         (nombre_proyecto, descripcion, fecha_inicio, fecha_final_estimada, fecha_finalizado, id_usuario, id_tipo_proyecto, id_estado, id_carrera) 
         VALUES (:nombre_proyecto, :descripcion, :fecha_inicio, :fecha_final_estimada, :fecha_finalizado, :id_usuario, :id_tipo_proyecto, :id_estado, :id_carrera)";
 
-print_r($array);
+    //print_r($array);
     $sql = $conexion->prepare($insert);
     $sql->bindParam(':nombre_proyecto', $array["nombre"], PDO::PARAM_STR);
     $sql->bindParam(':descripcion', $array["descripcion"], PDO::PARAM_STR);
@@ -129,8 +129,16 @@ function aceptarPostulacion($id_est, $id_proy){
     $sql = $conexion->prepare($query);
     $sql->execute();
 
-    $query2 = "update tbl_proyecto_universidad set id_estado = 2 where id_proyecto_universidad = " . $id_proy;
+    $query2 = "DELETE FROM tbl_postulante_universidad WHERE id_estudiante =" . $id_est ." AND id_estado_postulacion != 1";
     $sql = $conexion->prepare($query2);
+    $sql->execute(); 
+
+    $query3 = "DELETE FROM tbl_postulante_empresa WHERE id_estudiante =" . $id_est ." AND id_estado_postulacion != 1";
+    $sql = $conexion->prepare($query3);
+    $sql->execute();
+
+    $query4 = "update tbl_proyecto_universidad set id_estado = 2 where id_proyecto_universidad = " . $id_proy;
+    $sql = $conexion->prepare($query4);
     $sql->execute(); 
     echo '<div class="container rounded bg-primary text-center" style="width:7rem;">Aceptado</div>';
 }

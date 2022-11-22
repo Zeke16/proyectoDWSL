@@ -311,8 +311,8 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                         <div class="col-md-12">
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="button" class="btn btn-danger align-self-start" onclick="history.back()">Regresar</button>
-                                <form class="d-flex justify-content-center" action="../../../FPDF/individual-universidad.php" target="_blank" method="post">
-                                    <input type="number" hidden name="id_universidad" value="<?= $proyectos[0]->id_proyecto_empresa ?>">
+                                <form class="d-flex justify-content-center" action="../../../FPDF/postulantes-empresa.php" target="_blank" method="post">
+                                    <input type="number" hidden name="id_empresa" value="<?= $proyectos[0]->id_proyecto_empresa ?>">
                                     <input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded">
                                 </form>
                                 <?php

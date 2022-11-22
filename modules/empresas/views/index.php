@@ -293,7 +293,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 										</div>
 										<?php
 										if (isset($_SESSION['empresa'])) {
-											echo '<input class="form-control mt-2" hidden type="text" name="admin" value="' . $_SESSION['administrador'] . '">';
+											echo '<input class="form-control mt-2" hidden type="text" name="admin" value="' . $_SESSION['empresa'] . '">';
 
 										?>
 											<div class="card-footer" id="footer-logU">
@@ -311,7 +311,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 														</form>
 													</div>
 													<div class="col-md-3">
-														<form class="d-flex justify-content-center" target="_blank" action="../../../FPDF/individual-empresa.php" method="post">
+														<form class="d-flex justify-content-center" target="_blank" action="../../../FPDF/info-proyecto-empresa.php" method="post">
 															<input type="number" hidden name="id_empresa" value="<?= $proyectos[$i]->id_proyecto_empresa ?>">
 															<input type="submit" value="Generar pdf" id="btnCard" class="btn btn-secondary rounded border border-dark">
 														</form>
