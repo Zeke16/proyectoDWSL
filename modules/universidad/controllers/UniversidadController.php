@@ -3,6 +3,7 @@
 $envio = isset($_POST['envio']) ? $_POST['envio'] : '';
 $proceso = isset($_POST['proceso']) ? $_POST['proceso'] : '';
 date_default_timezone_set('America/El_Salvador');
+
 //Aplicacion de postulacion a proyecto de universidad
 $id_estudiante_aplicar = isset($_POST['id_estudiante_aplicar']) ? $_POST['id_estudiante_aplicar'] : '';
 $id_proyecto_aplicar = isset($_POST['id_proyecto_aplicar']) ? $_POST['id_proyecto_aplicar'] : '';

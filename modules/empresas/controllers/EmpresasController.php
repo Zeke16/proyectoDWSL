@@ -1,6 +1,7 @@
 <?php
 
 //post para crear cuentas tipo empresa
+$action = isset($_POST['action']) ? $_POST['action'] : '';
 $nombre = isset($_POST['nombreEmpresa']) ? $_POST['nombreEmpresa'] : '';
 $nrc = isset($_POST['nrc']) ? $_POST['nrc'] : '';
 $direccion = isset($_POST['direccion']) ? $_POST['direccion'] : '';
@@ -9,6 +10,12 @@ $id_departamento = isset($_POST['id_departamento']) ? $_POST['id_departamento'] 
 $id_municipio = isset($_POST['id_municipio']) ? $_POST['id_municipio'] : '';
 $correo = isset($_POST['correo']) ? $_POST['correo'] : '';
 $password = isset($_POST['password']) ? $_POST['password'] : '';
+
+//Aplicacion de postulacion a proyecto de universidad
+$envio = isset($_POST['envio']) ? $_POST['envio'] : '';
+$id_estudiante_aplicar = isset($_POST['id_estudiante_aplicar']) ? $_POST['id_estudiante_aplicar'] : '';
+$id_proyecto_aplicar = isset($_POST['id_proyecto_aplicar']) ? $_POST['id_proyecto_aplicar'] : '';
+$id_proyecto_finalizar = isset($_POST['id_proyecto_finalizar']) ? $_POST['id_proyecto_finalizar'] : '';
 
 $info = array(
     "nombre" => $nombre, "nrc" => $nrc, "direccion" => $direccion,
@@ -140,12 +147,55 @@ function updateProyectEmpresa($array, $idupdate)
     }
 }
 
+function aceptarPostulacion($id_est, $id_proy){
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+    $query = "UPDATE tbl_postulante_empresas 
+    SET id_estado_postulacion = 1 
+    WHERE id_estudiante = " . $id_est . " and id_proyecto_empresa = " . $id_proy; 
+    $sql = $conexion->prepare($query);
+    $sql->execute();
+    //echo $query;die;
+    $query2 = "update tbl_proyecto_empresas set id_estado = 2 where id_proyecto_empresa = " . $id_proy;
+    $sql = $conexion->prepare($query2);
+    $sql->execute(); 
+    echo '<div class="container rounded bg-primary text-center" style="width:7rem;">Aceptado</div>';
+}
+
+function rechazarPostulacion($id_est, $id_proy){
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+    $query = "UPDATE tbl_postulante_empresas 
+    SET id_estado_postulacion = 2 
+    WHERE id_estudiante = " . $id_est . " and id_proyecto_empresa = " . $id_proy; 
+    $sql = $conexion->prepare($query);
+    $sql->execute();
+    echo '<div class="container rounded bg-danger text-center" style="width:7rem;">Rechazado</div>';
+}
+
+function finalizarProyecto($id){
+    include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php');
+    $query = "UPDATE tbl_proyecto_empresas
+    SET id_estado = 3, fecha_finalizado = '" . date('Y-m-d') . "' WHERE id_proyecto_empresa = " . $id;
+    $sql = $conexion->prepare($query);
+    $sql->execute();
+    //echo $query;die;
+    echo '<div class="container rounded bg-primary" style="width:7rem;">Finalizado</div>';
+}
+
 if ($_SERVER['REQUEST_METHOD'] == "POST" && $action == 'create') {
     createProyectEmpresa($infoCrud);
 }
 if ($_SERVER['REQUEST_METHOD'] == "POST" && $action == 'edit') {
     updateProyectEmpresa($infoCrud, $id_proyecto);
 }
-if ($_SERVER['REQUEST_METHOD'] == "POST") {
+if($envio == 'aceptarPostulante'){
+    aceptarPostulacion($id_estudiante_aplicar, $id_proyecto_aplicar);
+}
+if($envio == 'rechazarPostulante'){
+    rechazarPostulacion($id_estudiante_aplicar, $id_proyecto_aplicar);
+}
+if($envio == 'finalizarProyecto'){
+    finalizarProyecto($id_proyecto_finalizar);
+}
+if ($_SERVER['REQUEST_METHOD'] == "POST" && $action == "crear") {
     createEmpresa($info);
 }

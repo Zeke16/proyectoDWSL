@@ -228,24 +228,25 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
             <div id="alert">
 
             </div>
-            <?php
-            $ver = isset($_POST['ver']) ? $_POST['ver'] : '';
-            $proyectoU = "Select p.id_proyecto_universidad, p.nombre_proyecto, p.descripcion, p.fecha_inicio, p.fecha_final_estimada, p.fecha_finalizado, u.nombre_usuario, tp.nombre_tipo_proyecto, c.nombre_carrera, ep.estado
-            from tbl_proyecto_universidad as p 
-            inner join tbl_super_administrador as u on p.id_usuario = u.id_usuario
-            inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
-            inner join tbl_carreras as c on p.id_carrera = c.id_carrera
-            inner join tbl_estado_proyectos as ep on p.id_estado = ep.id_estado
-            where id_proyecto_universidad = " . $ver;
+            <div class="row mx-2">
+                <?php
+                $ver = isset($_POST['ver']) ? $_POST['ver'] : '';
+                $proyectoU = "Select p.id_proyecto_universidad, p.nombre_proyecto, p.descripcion, p.fecha_inicio, p.fecha_final_estimada, p.fecha_finalizado, u.nombre_usuario, tp.nombre_tipo_proyecto, c.nombre_carrera, ep.estado
+                from tbl_proyecto_universidad as p 
+                inner join tbl_super_administrador as u on p.id_usuario = u.id_usuario
+                inner join tbl_tipo_proyecto as tp on p.id_tipo_proyecto = tp.id_tipo_proyecto
+                inner join tbl_carreras as c on p.id_carrera = c.id_carrera
+                inner join tbl_estado_proyectos as ep on p.id_estado = ep.id_estado
+                where id_proyecto_universidad = " . $ver;
 
-            $ejecutable = $conexion->prepare($proyectoU);
-            $ejecutable->execute();
-            $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+                $ejecutable = $conexion->prepare($proyectoU);
+                $ejecutable->execute();
+                $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
 
-            $nr = $ejecutable->RowCount();
-            if ($nr == 1) {
-            ?>
-                <div class="row mx-2">
+                $nr = $ejecutable->RowCount();
+                if ($nr == 1) {
+                ?>
+
                     <div class="col-md-12 mt-2">
                         <table class="table table-striped">
                             <thead class="thead-dark">
@@ -300,23 +301,19 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                         <div class="col-md-12">
                             <div class="modal-footer d-flex justify-content-between">
                                 <button type="button" class="btn btn-danger align-self-start" onclick="history.back()">Regresar</button>
-                                <form class="d-flex justify-content-center" action="../views/update.php" method="post">
-                                    <input type="number" hidden name="editar" value="<?= $proyectos[0]->id_proyecto_universidad ?>">
-                                    <input type="submit" value="Editar" class="btn btn-warning rounded">
-                                </form>
                                 <form class="d-flex justify-content-center" action="../../../FPDF/individual-universidad.php" target="_blank" method="post">
                                     <input type="number" hidden name="id_universidad" value="<?= $proyectos[0]->id_proyecto_universidad ?>">
                                     <input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded">
                                 </form>
                                 <?php
-                                if(strtolower($proyectos[0]->estado) == "finalizado"){
+                                if (strtolower($proyectos[0]->estado) == "finalizado") {
                                 ?>
                                 <?php
-                                }else{
+                                } else {
                                 ?>
-                                <button type="button" class="btn btn-primary" id="finalizar-proyecto" data-id-proyecto-fin="<?= $ver ?>">Finalizar proyecto</button>
+                                    <button type="button" class="btn btn-primary" id="finalizar-proyecto" data-id-proyecto-fin="<?= $ver ?>">Finalizar proyecto</button>
                                 <?php
-                                }?>
+                                } ?>
                             </div>
                         </div>
                     </div>
@@ -366,7 +363,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                                 <?php
                                                 if ($p->id_estado_postulacion == 1) {
                                                 ?>
-                                                    <div class="container rounded bg-success text-center" style="width:7rem;">Aceptado</div>
+                                                    <div class="container rounded bg-primary text-center" style="width:7rem;">Aceptado</div>
                                                 <?php
                                                 } else if ($p->id_estado_postulacion == 2) {
                                                 ?>
@@ -397,20 +394,20 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                     ?>
                         <div class="col-md-12 mt-2 d-flex flex-column justify-content-center">
                             <h1 class="text-center">No existe postulantes para este proyecto</h1>
-                            <a href="index.php" class="btn btn-danger rounded align-self-center mt-4" style="width: 20rem;">Regresar</a>
                         </div>
                     <?php
                     }
                     ?>
                 <?php
-            } else { ?>
+                } else {
+                ?>
                     <div class="col-md-12 mt-2 d-flex flex-column justify-content-center">
                         <h1 class="text-center">No existe este registro...</h1>
                         <a href="index.php" class="btn btn-danger rounded align-self-center mt-4" style="width: 20rem;">Regresar</a>
                     </div>
                 <?php
-            } ?>
-                </div>
+                } ?>
+            </div>
         </div>
 
         <!--TOGGLE-->

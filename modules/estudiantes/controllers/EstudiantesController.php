@@ -19,6 +19,7 @@ $idProyecto =  isset($_POST['idProyecto']) ? $_POST['idProyecto'] : '';
 $idEstudiante = isset($_POST['idEstudiante']) ? $_POST['idEstudiante'] : '';
 $entidad = isset($_POST['entidad']) ? $_POST['entidad'] : '';
 
+
 //array que contiene todo lo relacionado a la creacion de una cuenta de estudiante
 $info = array(
     "nombre" => $nombre, "edad" => $edad, "direccion" => $direccion,

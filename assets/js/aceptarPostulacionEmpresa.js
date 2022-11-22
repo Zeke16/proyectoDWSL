@@ -1,4 +1,5 @@
 const postButtonsAceptar = document.querySelectorAll("#postulacionAceptar");
+console.log(postButtonsAceptar)
 postButtonsAceptar.forEach((item) => {
   item.addEventListener("click", () => {
     if (item.dataset.idEstudiante && item.dataset.proyecto) {
@@ -8,7 +9,7 @@ postButtonsAceptar.forEach((item) => {
 
       if (aceptarPostulacion) {
         $.ajax({
-          url: "../controllers/UniversidadController.php",
+          url: "../controllers/EmpresasController.php",
           type: "POST",
           data: {
             id_estudiante_aplicar: item.dataset.idEstudiante,
@@ -36,7 +37,7 @@ finalizarProyecto.addEventListener("click", ()=>{
       );
     if(aceptar){
     $.ajax({
-        url: "../controllers/UniversidadController.php",
+        url: "../controllers/EmpresasController.php",
         type: "POST",
         data: {
           id_proyecto_finalizar: finalizarProyecto.dataset.idProyectoFin,

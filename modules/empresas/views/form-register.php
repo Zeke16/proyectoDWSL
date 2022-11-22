@@ -49,6 +49,7 @@
                             <div class="row">
                                 <div class="col-md-6">
                                     <label>Escribe el nombre de la empresa:</label><br>
+                                    <input class="form-control mt-2" type="text" name="action" value="create" hidden />
                                     <input class="form-control mt-2" type="text" name="nombreEmpresa" placeholder="Ingresar nombre de la empresa" required /><br>
                                 </div>
                                 <div class="col-md-6">

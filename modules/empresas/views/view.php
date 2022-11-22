@@ -9,10 +9,10 @@ if ((isset($_SESSION['administrador']) && isset($_SESSION['id_user'])) || (isset
     $id_empresa = isset($_SESSION['id_empresa']) ? $_SESSION['id_empresa'] : '';
 
     $now = time();
-	if ($now > $_SESSION['end']) {
-		session_destroy();
-		header("location: login.php");
-	}
+    if ($now > $_SESSION['end']) {
+        session_destroy();
+        header("location: login.php");
+    }
 } else {
     header("location: login.php");
 }
@@ -59,7 +59,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                     <?php
                     if (isset($_SESSION['administrador'])) {
                         echo '../../universidad/views/index.php';
-                    }else if(isset($_SESSION['empresa'])){
+                    } else if (isset($_SESSION['empresa'])) {
                         echo 'index.php';
                     } ?>" class="nav-link">Home</a>
                 </li>
@@ -236,24 +236,25 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
             <div id="alert">
 
             </div>
-            <?php
-            $ver = isset($_POST['ver']) ? $_POST['ver'] : '';
-            $proyectoEmp = "Select e.id_proyecto_empresa, e.nombre_proyecto, e.descripcion, e.fecha_inicio, e.fecha_final_estimada, e.fecha_finalizado, emp.nombre_empresa, tp.nombre_tipo_proyecto, c.nombre_carrera, ep.estado
-            from tbl_proyecto_empresas as e
-            inner join tbl_empresas as emp on e.id_empresa = emp.id_empresa
-            inner join tbl_tipo_proyecto as tp on e.id_tipo_proyecto = tp.id_tipo_proyecto
-            inner join tbl_carreras as c on e.id_carrera = c.id_carrera
-            inner join tbl_estado_proyectos as ep on e.id_estado = ep.id_estado
-            where id_proyecto_empresa = " . $ver;
-            
-            $ejecutable = $conexion->prepare($proyectoEmp);
-            $ejecutable->execute();
-            $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+            <div class="row mx-2">
+                <?php
+                $ver = isset($_POST['ver']) ? $_POST['ver'] : '';
+                $proyectoEmp = "Select e.id_proyecto_empresa, e.nombre_proyecto, e.descripcion, e.fecha_inicio, e.fecha_final_estimada, e.fecha_finalizado, emp.nombre_empresa, tp.nombre_tipo_proyecto, c.nombre_carrera, ep.estado
+                from tbl_proyecto_empresas as e
+                inner join tbl_empresas as emp on e.id_empresa = emp.id_empresa
+                inner join tbl_tipo_proyecto as tp on e.id_tipo_proyecto = tp.id_tipo_proyecto
+                inner join tbl_carreras as c on e.id_carrera = c.id_carrera
+                inner join tbl_estado_proyectos as ep on e.id_estado = ep.id_estado
+                where id_proyecto_empresa = " . $ver;
 
-            $nr = $ejecutable->RowCount();
-            if ($nr == 1) {
-            ?>
-                <div class="row mx-2">
+                $ejecutable = $conexion->prepare($proyectoEmp);
+                $ejecutable->execute();
+                $proyectos = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+
+                $nr = $ejecutable->RowCount();
+                if ($nr == 1) {
+                ?>
+
                     <div class="col-md-12 mt-2">
                         <table class="table table-striped">
                             <thead class="thead-dark">
@@ -289,7 +290,7 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                                     <th width="25%">Fecha de finalizacion de proyecto:</th>
                                     <td width="25%"><?= $proyectos[0]->fecha_finalizado ?></td>
                                     <th width="25%">Estado del proyecto:</th>
-                                    <td width="25%" class="text-center">
+                                    <td width="25%" class="text-center" id="status">
                                         <?php
                                         if (strtolower($proyectos[0]->estado) == "sin asignar") {
                                             echo '<div class="container rounded bg-danger" style="width:7rem;">' . $proyectos[0]->estado . '</div>';
@@ -308,39 +309,130 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
                             </tbody>
                         </table>
                         <div class="col-md-12">
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-danger" onclick="history.back()">Regresar</button>
-                                <form class="d-flex justify-content-center" action="../../../FPDF/individual-empresa.php" target="_blank" method="post">
-                                    <input type="number" hidden name="id_empresa" value="<?= $proyectos[0]->id_proyecto_empresa ?>">
+                            <div class="modal-footer d-flex justify-content-between">
+                                <button type="button" class="btn btn-danger align-self-start" onclick="history.back()">Regresar</button>
+                                <form class="d-flex justify-content-center" action="../../../FPDF/individual-universidad.php" target="_blank" method="post">
+                                    <input type="number" hidden name="id_universidad" value="<?= $proyectos[0]->id_proyecto_empresa ?>">
                                     <input type="submit" value="Generar pdf" id="pdf" class="btn btn-secondary rounded">
                                 </form>
+                                <?php
+                                if (strtolower($proyectos[0]->estado) == "finalizado") {
+                                ?>
+                                <?php
+                                } else {
+                                ?>
+                                    <button type="button" class="btn btn-primary" id="finalizar-proyecto" data-id-proyecto-fin="<?= $ver ?>">Finalizar proyecto</button>
+                                <?php
+                                } ?>
                             </div>
                         </div>
                     </div>
-                </div>
-            <?php
-            } else { ?>
-                <div class="row mx-2">
+                    <?php
+                    //Seleccionamos todos los postulantes aplicados a este proyecto en especifico
+                    $selectPostulantesEmpresa = isset($_POST['ver']) ? $_POST['ver'] : '';
+                    $postulante = "
+                    Select 
+                        p.id_postulacion_empresa, p.id_estado_postulacion,
+                        est.carnet, est.id_estudiante, est.nombre_estudiante, est.correo_electronico, est.edad, ca.nombre_carrera 
+                    from tbl_postulante_empresas as p 
+                    inner join tbl_estudiantes as est on p.id_estudiante = est.id_estudiante 
+                    inner join tbl_carreras as ca on est.id_carrera = ca.id_carrera 
+                    where id_proyecto_empresa = 
+                    " . $ver;
+                    //echo $postulante;
+                    $ejecutable = $conexion->prepare($postulante);
+                    $ejecutable->execute();
+                    $postulaciones = $ejecutable->fetchAll(PDO::FETCH_OBJ);
+
+
+
+                    $nr2 = $ejecutable->RowCount();
+                    if ($nr2 > 0) {
+                    ?>
+                        <div class="col-md-12 mt-2">
+                            <h1 class="lead text-center bg-primary border mb-0">Postulantes del proyecto - <?= $proyectos[0]->nombre_proyecto ?></h1>
+                            <table class="table table-striped">
+                                <thead class="table-primary">
+                                    <tr>
+                                        <th width="10%">Carnet</th>
+                                        <th width="20%">Nombre</th>
+                                        <th width="20%">Correo electronico</th>
+                                        <th width="10%">Edad</th>
+                                        <th width="20%" class="text-center">Acciones/Estados</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="table-bordered">
+                                    <?php
+                                    foreach ($postulaciones as $p) {
+                                    ?>
+                                        <tr>
+                                            <th><?= $p->carnet ?></th>
+                                            <td><?= $p->nombre_estudiante ?></td>
+                                            <td><?= $p->correo_electronico ?></td>
+                                            <td><?= $p->edad ?></td>
+                                            <td class="bg-ligh">
+                                                <?php
+                                                if ($p->id_estado_postulacion == 1) {
+                                                ?>
+                                                    <div class="container rounded bg-primary text-center" style="width:7rem;">Aceptado</div>
+                                                <?php
+                                                } else if ($p->id_estado_postulacion == 2) {
+                                                ?>
+                                                    <div class="container rounded bg-danger text-center" style="width:7rem;">Rechazado</div>
+                                                <?php
+                                                } else { ?>
+                                                    <div class="d-flex justify-content-around" id="content-button-<?= $p->id_estudiante ?>">
+                                                        <button type="button" id="postulacionAceptar" data-id-estudiante="<?= $p->id_estudiante ?>" data-proyecto="<?= $ver; ?>" class="btn btn-primary">
+                                                            <i class="fas fa-check"></i> Aceptar
+                                                        </button>
+                                                        <button type="button" id="postulacionRechazar" data-id-estudiante="<?= $p->id_estudiante ?>" data-proyecto="<?= $ver; ?>" class="btn btn-danger">
+                                                            <i class="fas fa-times"></i> Rechazar
+                                                        </button>
+                                                    </div>
+                                                <?php
+                                                }
+                                                ?>
+                                            </td>
+                                        </tr>
+                                    <?php
+                                    }
+                                    ?>
+                                </tbody>
+                            </table>
+                        </div>
+                    <?php
+                    } else {
+                    ?>
+                        <div class="col-md-12 mt-2 d-flex flex-column justify-content-center">
+                            <h1 class="text-center">No existe postulantes para este proyecto</h1>
+                        </div>
+                    <?php
+                    }
+                    ?>
+                <?php
+                } else { ?>
                     <div class="col-md-12 mt-2 d-flex flex-column justify-content-center">
                         <h1 class="text-center">No existe este registro...</h1>
                         <a href="index.php" class="btn btn-danger rounded align-self-center mt-4" style="width: 20rem;">Regresar</a>
                     </div>
                 <?php
-            } ?>
-                </div>
+                } ?>
+            </div>
         </div>
 
         <!--TOGGLE-->
-        <script src="http://localhost/proyectodwsl/assets/js/bootstrap4-toggle.js"></script>
+        <script src="../../../assets/js/bootstrap4-toggle.js"></script>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
         <!--JS PARA AdminLTE-->
-        <script src="http://localhost/proyectodwsl/assets/js/bootstrap.bundle.min.js"></script>
-        <script src="http://localhost/proyectodwsl/assets/js/bootstrap.bundle.min.js.map"></script>
-        <script src="http://localhost/proyectodwsl/assets/js/adminlte.min.js"></script>
-        <script src="http://localhost/proyectodwsl/assets/js/adminlte.min.js.map"></script>
-        <script src="http://localhost/proyectodwsl/assets/js/changeBColor.js"></script>
-        <script src="http://localhost/proyectodwsl/assets/js/alert.js"></script>
+        <script src="../../../assets/js/bootstrap.bundle.min.js"></script>
+        <script src="../../../assets/js/bootstrap.bundle.min.js.map"></script>
+        <script src="../../../assets/js/adminlte.min.js"></script>
+        <script src="../../../assets/js/adminlte.min.js.map"></script>
+        <script src="../../../assets/js/changeBColor.js"></script>
+        <script src="../../../assets/js/alert.js"></script>
+        <script src="../../../assets/js/aceptarPostulacionEmpresa.js"></script>
+        <script src="../../../assets/js/rechazarPostulacionEmpresa.js"></script>
 </body>
 
 </html>
