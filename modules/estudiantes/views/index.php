@@ -371,6 +371,16 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 								$postulados[] = $ex->id_proyecto_universidad;
 							}
 
+							//saber si es usuario ya posee un proyecto activo
+							$activo = "SELECT * from tbl_postulante_empresas as p where p.id_estudiante =".$id_estudiante." AND p.id_estado_postulacion = 1";
+							$existe = $conexion->prepare($activo);
+							$existe->execute();
+							$nActivoEmp = $existe->rowCount();
+							
+							$activo = "SELECT * from tbl_postulante_universidad as p where p.id_estudiante =".$id_estudiante." AND p.id_estado_postulacion = 1";
+							$existe = $conexion->prepare($activo);
+							$existe->execute();
+							$nActivoU = $existe->rowCount();
 							//Seleccionando los proyectos que pertenecen a la carrera del usuario
 							$proyectoU = "Select * from tbl_proyecto_universidad where id_carrera = " . $carrera . " and id_estado = 1";
 							$ejecutable = $conexion->prepare($proyectoU);
@@ -401,20 +411,28 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 												 * es cierto, mostrara el siguiente contenido
 												 * */
 												if ($num_materias >= $materiasMinimas) {
-													/**Se revisa si el estudiante esta postulado en los proyectos,
-													 * Si esta postulado mostramos un boton para dejar de postularnos
-													 * En caso contrario nos permite aplicar al proyecto
-													 */
-													if (in_array($proyectos[$i]->id_proyecto_universidad, $postulados)) {
-														echo '
+													/**Si existe un proyecto activo, no permitira aplicar a otro proyecto, 
+													 * en caso contrario, permitira aplicar como dejar de aplicar*/
+
+													if ($nActivoEmp == 1 || $nActivoU == 1) {
+														echo '';
+													} else {
+														/**Se revisa si el estudiante esta postulado en los proyectos,
+														 * Si esta postulado mostramos un boton para dejar de postularnos
+														 * En caso contrario nos permite aplicar al proyecto
+														 */
+														if (in_array($proyectos[$i]->id_proyecto_universidad, $postulados)) {
+
+															echo '
 														<div class="col-md-12 d-flex justify-content-center" id="apply-' . $proyectos[$i]->id_proyecto_universidad . '">
 															<button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_universidad . '" data-id="' . $id_estudiante . '" id="noAplicar"><i class="fas fa-reply"></i> Dejar de aplicar</button>
 														</div>';
-													} else {
-														echo '
+														} else {
+															echo '
 														<div class="col-md-12 d-flex justify-content-center" id="apply-' . $proyectos[$i]->id_proyecto_universidad . '">
 															<button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_universidad . '" data-id="' . $id_estudiante . '" id="aplicar"><i class="fas fa-envelope"></i>  Aplicar</button>
 														</div>';
+														}
 													}
 												} else {
 													/**Si no se cumple la cantidad minima de materias no se podra
@@ -473,20 +491,24 @@ include_once($_SERVER["DOCUMENT_ROOT"] . '/proyectodwsl/assets/db/conexion.php')
 												 * es cierto, mostrara el siguiente contenido
 												 * */
 												if ($num_materias >= $materiasMinimas) {
-													/**Se revisa si el estudiante esta postulado en los proyectos,
-													 * Si esta postulado mostramos un boton para dejar de postularnos
-													 * En caso contrario nos permite aplicar al proyecto
-													 */
-													if (in_array($proyectos[$i]->id_proyecto_empresa, $postuladosEmpresa)) {
-														echo '
+													if ($nActivoU == 1 || $nActivoEmp == 1) {
+														echo '';
+													} else {
+														/**Se revisa si el estudiante esta postulado en los proyectos,
+														 * Si esta postulado mostramos un boton para dejar de postularnos
+														 * En caso contrario nos permite aplicar al proyecto
+														 */
+														if (in_array($proyectos[$i]->id_proyecto_empresa, $postuladosEmpresa)) {
+															echo '
 														<div class="col-md-12 d-flex justify-content-center" id="apply-empresa-' . $proyectos[$i]->id_proyecto_empresa . '">
 															<button type="button" class="btn btn-danger btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_empresa . '" data-id="' . $id_estudiante . '" id="noAplicarEmpresa"><i class="fas fa-reply"></i> Dejar de aplicar</button>
 														</div>';
-													} else {
-														echo '
+														} else {
+															echo '
 														<div class="col-md-12 d-flex justify-content-center" id="apply-empresa-' . $proyectos[$i]->id_proyecto_empresa . '">
 															<button type="button" class="btn btn-primary btn-md border border-dark" data-id-proyect="' . $proyectos[$i]->id_proyecto_empresa . '" data-id="' . $id_estudiante . '" id="aplicarEmpresa"><i class="fas fa-envelope"></i>  Aplicar</button>
 														</div>';
+														}
 													}
 												} else {
 													/**Si no se cumple la cantidad minima de materias no se podra
