@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-11-2022 a las 02:34:40
+-- Tiempo de generación: 24-11-2022 a las 01:19:24
 -- Versión del servidor: 10.4.25-MariaDB
 -- Versión de PHP: 7.4.30
 
@@ -386,6 +386,26 @@ INSERT INTO `tbl_empresas` (`id_empresa`, `nombre_empresa`, `nrc`, `direccion_em
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `tbl_estado_postulaciones`
+--
+
+CREATE TABLE `tbl_estado_postulaciones` (
+  `id_estado_postulacion` int(11) NOT NULL,
+  `estado_postulacion` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tbl_estado_postulaciones`
+--
+
+INSERT INTO `tbl_estado_postulaciones` (`id_estado_postulacion`, `estado_postulacion`) VALUES
+(1, 'Aprobado'),
+(2, 'Rechazado'),
+(3, 'Pendiente');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `tbl_estado_proyectos`
 --
 
@@ -400,7 +420,7 @@ CREATE TABLE `tbl_estado_proyectos` (
 
 INSERT INTO `tbl_estado_proyectos` (`id_estado`, `estado`) VALUES
 (1, 'Sin asignar'),
-(2, 'En Proceso'),
+(2, 'En proceso'),
 (3, 'Finalizado'),
 (4, 'En pausa');
 
@@ -431,9 +451,10 @@ CREATE TABLE `tbl_estudiantes` (
 --
 
 INSERT INTO `tbl_estudiantes` (`id_estudiante`, `nombre_estudiante`, `edad`, `dui`, `direccion`, `telefono`, `fecha_nacimiento`, `carnet`, `id_carrera`, `materias_cursadas`, `id_tipo_usuario`, `correo_electronico`, `password`) VALUES
-(1, 'Ezequiel Ramirez', 22, '06045720-9', '', '79291814', '2000-05-16', 'u20181130', 1, 30, 2, 'kr2000.16@gmail.com', '123456'),
+(1, 'Ezequiel Ramirez', 22, '06045720-9', 'San Miguel', '79291814', '2000-05-16', 'u20181130', 1, 24, 2, 'kr2000.16@gmail.com', '123456'),
 (2, 'asfafa', 2353, 'asfa', 'asfasfas', '14', '2022-10-30', 'safa', 1, 21, 2, 'asda@ascasc.com', 'asdasdg'),
-(3, 'asfdasd', 2342, 'asfasf', 'asdasd', '2342', '2022-11-21', 'asfasfas', 1, 234, 2, 'asda@ascasc.com', 'asfas');
+(3, 'asfdasd', 2342, 'asfasf', 'asdasd', '2342', '2022-11-21', 'asfasfas', 1, 234, 2, 'asda@ascasc.com', 'asfas'),
+(15, 'Zeke', 21, '934853272-', 'San Miguel', '12', '1212-03-12', 'U20181131', 1, 25, 2, 'correo@gmail.com', '123456');
 
 -- --------------------------------------------------------
 
@@ -444,8 +465,17 @@ INSERT INTO `tbl_estudiantes` (`id_estudiante`, `nombre_estudiante`, `edad`, `du
 CREATE TABLE `tbl_postulante_empresas` (
   `id_postulacion_empresa` int(11) NOT NULL,
   `id_proyecto_empresa` int(11) NOT NULL,
-  `id_estudiantes` varchar(11) NOT NULL
+  `id_estudiante` int(11) NOT NULL,
+  `id_estado_postulacion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tbl_postulante_empresas`
+--
+
+INSERT INTO `tbl_postulante_empresas` (`id_postulacion_empresa`, `id_proyecto_empresa`, `id_estudiante`, `id_estado_postulacion`) VALUES
+(3, 14, 1, 1),
+(4, 23, 1, 2);
 
 -- --------------------------------------------------------
 
@@ -456,8 +486,17 @@ CREATE TABLE `tbl_postulante_empresas` (
 CREATE TABLE `tbl_postulante_universidad` (
   `id_postulacion_universidad` int(11) NOT NULL,
   `id_proyecto_universidad` int(11) NOT NULL,
-  `id_estudiantes` varchar(255) NOT NULL
+  `id_estudiante` int(11) NOT NULL,
+  `id_estado_postulacion` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tbl_postulante_universidad`
+--
+
+INSERT INTO `tbl_postulante_universidad` (`id_postulacion_universidad`, `id_proyecto_universidad`, `id_estudiante`, `id_estado_postulacion`) VALUES
+(8, 3, 1, 2),
+(10, 3, 15, 2);
 
 -- --------------------------------------------------------
 
@@ -470,13 +509,27 @@ CREATE TABLE `tbl_proyecto_empresas` (
   `nombre_proyecto` varchar(255) NOT NULL,
   `descripcion` varchar(255) NOT NULL,
   `fecha_inicio` date NOT NULL,
-  `fecha_estimada_final` date NOT NULL,
+  `fecha_final_estimada` date NOT NULL,
   `fecha_finalizado` date NOT NULL,
   `id_empresa` int(11) NOT NULL,
   `id_tipo_proyecto` int(11) NOT NULL,
   `id_estado` int(11) NOT NULL,
   `id_carrera` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `tbl_proyecto_empresas`
+--
+
+INSERT INTO `tbl_proyecto_empresas` (`id_proyecto_empresa`, `nombre_proyecto`, `descripcion`, `fecha_inicio`, `fecha_final_estimada`, `fecha_finalizado`, `id_empresa`, `id_tipo_proyecto`, `id_estado`, `id_carrera`) VALUES
+(12, 'fdhsfdh', 'sdfsdsdsdsdd', '2022-11-05', '2022-11-05', '2022-11-05', 9, 3, 1, 1),
+(13, 'asdgasg', '1234455', '2022-11-15', '2022-11-15', '2022-11-15', 9, 1, 1, 1),
+(14, 'Proyecto de prueba', '1', '2022-11-15', '2022-11-15', '2022-11-15', 9, 1, 2, 1),
+(19, 'Proyecto de prueba', 'fdesbfdsgsd', '2022-11-17', '2022-12-03', '2022-12-03', 6, 1, 1, 1),
+(20, 'Proyecto de prueba', 'fdgshsfdg', '2022-10-31', '2022-11-14', '2022-11-14', 7, 1, 1, 1),
+(21, 'Proyecto de prueba', 'fdgshsfdg', '2022-10-31', '2022-11-14', '2022-11-14', 7, 1, 1, 1),
+(22, 'Proyecto de prueba', 'fdgshsfdg', '2022-10-31', '2022-11-14', '2022-11-14', 7, 1, 1, 1),
+(23, 'Proyecto de prueba', 'dsfgdsfg', '2022-11-17', '2022-11-17', '2022-11-22', 8, 2, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -502,9 +555,7 @@ CREATE TABLE `tbl_proyecto_universidad` (
 --
 
 INSERT INTO `tbl_proyecto_universidad` (`id_proyecto_universidad`, `nombre_proyecto`, `descripcion`, `fecha_inicio`, `fecha_final_estimada`, `fecha_finalizado`, `id_usuario`, `id_tipo_proyecto`, `id_estado`, `id_carrera`) VALUES
-(1, 'Proyecto de prueba', 'asfa', '2022-11-10', '2022-11-30', '0000-00-00', 1, 1, 1, 1),
-(2, 'Proyecto de prueba', 'asfasfas', '2022-11-01', '2022-11-15', '0000-00-00', 1, 2, 1, 1),
-(3, 'Proyecto de prueba', 'fafsafas', '2022-11-22', '2022-11-04', '0000-00-00', 1, 3, 1, 1),
+(3, 'Proyecto de prueba', 'fafsafas', '2022-11-22', '2022-11-04', '2022-11-22', 1, 3, 3, 1),
 (4, 'asfafaasf', 'asfasfasfasf', '2022-11-17', '2022-11-08', '0000-00-00', 1, 2, 1, 1),
 (5, 'Proyecto de prueba', 'sdgasg', '2022-11-21', '2022-11-22', '0000-00-00', 1, 1, 1, 1),
 (6, 'dsga', 'asdgsagas', '2323-04-23', '2352-05-23', '0000-00-00', 1, 1, 1, 1),
@@ -512,7 +563,13 @@ INSERT INTO `tbl_proyecto_universidad` (`id_proyecto_universidad`, `nombre_proye
 (8, 'asfasfa', 'asfafas', '0000-00-00', '2522-05-23', '0000-00-00', 1, 1, 1, 1),
 (9, 'asfasfa', 'asfafas', '0000-00-00', '2522-05-23', '0000-00-00', 1, 1, 1, 1),
 (10, 'asfafaasf', 'asfasfasfas', '0000-00-00', '2141-04-12', '0000-00-00', 1, 2, 1, 1),
-(11, 'Proyecto ', 'basfdb knjlbsfd knjlvbfdcz knlbsfd knl', '2022-11-21', '2022-12-08', '0000-00-00', 1, 2, 1, 1);
+(11, 'Proyecto ', 'basfdb knjlbsfd knjlvbfdcz knlbsfd knl', '2022-11-21', '2022-12-08', '0000-00-00', 1, 2, 1, 1),
+(12, 'Proyecto de prueba2', 'asfa2', '2022-11-10', '2022-11-30', '0000-00-00', 1, 2, 1, 1),
+(13, 'Proyecto de prueba', 'Probando update', '2022-11-10', '2022-11-30', '0000-00-00', 1, 1, 1, 1),
+(14, 'afdhah', 'gasgagah', '2234-04-23', '2342-04-23', '0000-00-00', 1, 2, 1, 1),
+(19, 'Proyecto de prueba', 'asgfsgnfmnfgsh', '2022-11-15', '2022-11-15', '0000-00-00', 1, 1, 1, 1),
+(20, 'asfafaasf', 'dsagagasg', '2022-11-15', '2022-11-15', '2022-11-15', 1, 3, 1, 1),
+(21, 'Proyecto de prueba 3', 'fdsghfgs', '2022-11-17', '2022-11-30', '2022-11-30', 1, 2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -607,6 +664,12 @@ ALTER TABLE `tbl_empresas`
   ADD KEY `id_municipio` (`id_municipio`);
 
 --
+-- Indices de la tabla `tbl_estado_postulaciones`
+--
+ALTER TABLE `tbl_estado_postulaciones`
+  ADD PRIMARY KEY (`id_estado_postulacion`);
+
+--
 -- Indices de la tabla `tbl_estado_proyectos`
 --
 ALTER TABLE `tbl_estado_proyectos`
@@ -625,34 +688,38 @@ ALTER TABLE `tbl_estudiantes`
 --
 ALTER TABLE `tbl_postulante_empresas`
   ADD PRIMARY KEY (`id_postulacion_empresa`),
-  ADD KEY `id_proyecto_empresa` (`id_proyecto_empresa`);
+  ADD KEY `id_estudiante` (`id_estudiante`),
+  ADD KEY `tbl_postulante_empresas_ibfk_1` (`id_proyecto_empresa`),
+  ADD KEY `id_estado_postulacion` (`id_estado_postulacion`);
 
 --
 -- Indices de la tabla `tbl_postulante_universidad`
 --
 ALTER TABLE `tbl_postulante_universidad`
   ADD PRIMARY KEY (`id_postulacion_universidad`),
-  ADD KEY `id_proyecto_universidad` (`id_proyecto_universidad`);
+  ADD KEY `tbl_postulante_universidad_ibfk_1` (`id_proyecto_universidad`),
+  ADD KEY `tbl_postulante_universidad_ibfk_2` (`id_estudiante`),
+  ADD KEY `id_estado_postulacion` (`id_estado_postulacion`);
 
 --
 -- Indices de la tabla `tbl_proyecto_empresas`
 --
 ALTER TABLE `tbl_proyecto_empresas`
   ADD PRIMARY KEY (`id_proyecto_empresa`),
-  ADD KEY `id_carrera` (`id_carrera`),
-  ADD KEY `id_empresa` (`id_empresa`),
-  ADD KEY `id_estado` (`id_estado`),
-  ADD KEY `id_tipo_proyecto` (`id_tipo_proyecto`);
+  ADD KEY `tbl_proyecto_empresas_ibfk_1` (`id_carrera`),
+  ADD KEY `tbl_proyecto_empresas_ibfk_2` (`id_empresa`),
+  ADD KEY `tbl_proyecto_empresas_ibfk_3` (`id_estado`),
+  ADD KEY `tbl_proyecto_empresas_ibfk_4` (`id_tipo_proyecto`);
 
 --
 -- Indices de la tabla `tbl_proyecto_universidad`
 --
 ALTER TABLE `tbl_proyecto_universidad`
   ADD PRIMARY KEY (`id_proyecto_universidad`),
-  ADD KEY `id_carrera` (`id_carrera`),
-  ADD KEY `id_estado` (`id_estado`),
-  ADD KEY `id_tipo_proyecto` (`id_tipo_proyecto`),
-  ADD KEY `id_usuario` (`id_usuario`);
+  ADD KEY `tbl_proyecto_universidad_ibfk_1` (`id_carrera`),
+  ADD KEY `tbl_proyecto_universidad_ibfk_2` (`id_estado`),
+  ADD KEY `tbl_proyecto_universidad_ibfk_3` (`id_tipo_proyecto`),
+  ADD KEY `tbl_proyecto_universidad_ibfk_4` (`id_usuario`);
 
 --
 -- Indices de la tabla `tbl_super_administrador`
@@ -699,43 +766,49 @@ ALTER TABLE `tbl_carreras`
 -- AUTO_INCREMENT de la tabla `tbl_empresas`
 --
 ALTER TABLE `tbl_empresas`
-  MODIFY `id_empresa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_empresa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT de la tabla `tbl_estado_postulaciones`
+--
+ALTER TABLE `tbl_estado_postulaciones`
+  MODIFY `id_estado_postulacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_estado_proyectos`
 --
 ALTER TABLE `tbl_estado_proyectos`
-  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_estado` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_estudiantes`
 --
 ALTER TABLE `tbl_estudiantes`
-  MODIFY `id_estudiante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_estudiante` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_postulante_empresas`
 --
 ALTER TABLE `tbl_postulante_empresas`
-  MODIFY `id_postulacion_empresa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_postulacion_empresa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_postulante_universidad`
 --
 ALTER TABLE `tbl_postulante_universidad`
-  MODIFY `id_postulacion_universidad` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_postulacion_universidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_proyecto_empresas`
 --
 ALTER TABLE `tbl_proyecto_empresas`
-  MODIFY `id_proyecto_empresa` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_proyecto_empresa` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_proyecto_universidad`
 --
 ALTER TABLE `tbl_proyecto_universidad`
-  MODIFY `id_proyecto_universidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id_proyecto_universidad` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- AUTO_INCREMENT de la tabla `tbl_super_administrador`
@@ -784,31 +857,35 @@ ALTER TABLE `tbl_estudiantes`
 -- Filtros para la tabla `tbl_postulante_empresas`
 --
 ALTER TABLE `tbl_postulante_empresas`
-  ADD CONSTRAINT `tbl_postulante_empresas_ibfk_1` FOREIGN KEY (`id_proyecto_empresa`) REFERENCES `tbl_proyecto_empresas` (`id_proyecto_empresa`);
+  ADD CONSTRAINT `tbl_postulante_empresas_ibfk_1` FOREIGN KEY (`id_proyecto_empresa`) REFERENCES `tbl_proyecto_empresas` (`id_proyecto_empresa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_postulante_empresas_ibfk_2` FOREIGN KEY (`id_estudiante`) REFERENCES `tbl_estudiantes` (`id_estudiante`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_postulante_empresas_ibfk_3` FOREIGN KEY (`id_estado_postulacion`) REFERENCES `tbl_estado_postulaciones` (`id_estado_postulacion`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tbl_postulante_universidad`
 --
 ALTER TABLE `tbl_postulante_universidad`
-  ADD CONSTRAINT `tbl_postulante_universidad_ibfk_1` FOREIGN KEY (`id_proyecto_universidad`) REFERENCES `tbl_proyecto_universidad` (`id_proyecto_universidad`);
+  ADD CONSTRAINT `tbl_postulante_universidad_ibfk_1` FOREIGN KEY (`id_proyecto_universidad`) REFERENCES `tbl_proyecto_universidad` (`id_proyecto_universidad`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_postulante_universidad_ibfk_2` FOREIGN KEY (`id_estudiante`) REFERENCES `tbl_estudiantes` (`id_estudiante`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_postulante_universidad_ibfk_3` FOREIGN KEY (`id_estado_postulacion`) REFERENCES `tbl_estado_postulaciones` (`id_estado_postulacion`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tbl_proyecto_empresas`
 --
 ALTER TABLE `tbl_proyecto_empresas`
-  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_1` FOREIGN KEY (`id_carrera`) REFERENCES `tbl_carreras` (`id_carrera`),
-  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `tbl_empresas` (`id_empresa`),
-  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_3` FOREIGN KEY (`id_estado`) REFERENCES `tbl_estado_proyectos` (`id_estado`),
-  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_4` FOREIGN KEY (`id_tipo_proyecto`) REFERENCES `tbl_tipo_proyecto` (`id_tipo_proyecto`);
+  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_1` FOREIGN KEY (`id_carrera`) REFERENCES `tbl_carreras` (`id_carrera`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_2` FOREIGN KEY (`id_empresa`) REFERENCES `tbl_empresas` (`id_empresa`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_3` FOREIGN KEY (`id_estado`) REFERENCES `tbl_estado_proyectos` (`id_estado`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_proyecto_empresas_ibfk_4` FOREIGN KEY (`id_tipo_proyecto`) REFERENCES `tbl_tipo_proyecto` (`id_tipo_proyecto`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tbl_proyecto_universidad`
 --
 ALTER TABLE `tbl_proyecto_universidad`
-  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_1` FOREIGN KEY (`id_carrera`) REFERENCES `tbl_carreras` (`id_carrera`),
-  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_2` FOREIGN KEY (`id_estado`) REFERENCES `tbl_estado_proyectos` (`id_estado`),
-  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_3` FOREIGN KEY (`id_tipo_proyecto`) REFERENCES `tbl_tipo_proyecto` (`id_tipo_proyecto`),
-  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `tbl_super_administrador` (`id_usuario`);
+  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_1` FOREIGN KEY (`id_carrera`) REFERENCES `tbl_carreras` (`id_carrera`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_2` FOREIGN KEY (`id_estado`) REFERENCES `tbl_estado_proyectos` (`id_estado`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_3` FOREIGN KEY (`id_tipo_proyecto`) REFERENCES `tbl_tipo_proyecto` (`id_tipo_proyecto`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `tbl_proyecto_universidad_ibfk_4` FOREIGN KEY (`id_usuario`) REFERENCES `tbl_super_administrador` (`id_usuario`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `tbl_super_administrador`
